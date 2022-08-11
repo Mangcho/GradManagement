@@ -1,0 +1,77 @@
+<!-- Logout Modal -->
+<div class="modal fade" id="logout">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">로그아웃 하시겠습니까</h5>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary">유지</button>
+        <a href="/auth/logout">
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">로그아웃</button>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Navbar -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container-fluid">
+    <a class="navbar-brand text-center " href="/assistant">컴퓨터공학과<br>졸업인증</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01"
+      aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse justify-content-between" id="navbarColor01">
+      <ul class="navbar-nav me-auto">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" href="#" role="button"
+            aria-haspopup="true" aria-expanded="false">신청 관리
+            <span class="visually-hidden">(current)</span>
+          </a>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" href="/assistant/application">신청서 접수</a>
+            <a class="dropdown-item" href="/assistant/schedule">일정 입력</a>
+          </div>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" href="#" role="button"
+            aria-haspopup="true" aria-expanded="false">결과 관리
+          </a>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" href="/assistant/result">심사결과 입력</a>
+            <a class="dropdown-item" href="#">인증 조회</a>
+          </div>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link " href="#">공지사항</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">건의/질문</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#">학과내규</a>
+        </li>
+        </li>
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-haspopup="true"
+            aria-expanded="false">계정관리</a>
+          <div class="dropdown-menu">
+            <a class="dropdown-item" href="/assistant/auth">학생 계정정보 조회</a>
+            <a class="dropdown-item" href="/assistant/auth/password">학생 비밀번호 초기화</a>
+          </div>
+        </li>
+      </ul>
+      <ul class="navbar-nav">
+        <li>
+          <a class="nav-link" href="#logout" data-bs-toggle="modal" data-bs-target="#logout">로그아웃</a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+

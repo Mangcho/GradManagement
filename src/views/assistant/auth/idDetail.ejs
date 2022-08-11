@@ -1,0 +1,192 @@
+<% const dir=process.cwd() %>
+  <!DOCTYPE html>
+  <%- include(dir + '/src/views/common/head' ) %>
+
+    <body>
+      <%- include(dir + '/src/views/common/navbar-admin' ) %>
+        <!-- bootstrap5 PUT result alert -->
+        <div class="alert alert-dismissible alert-success d-none" id="saveAlert">
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+          <strong id="alert-text">정상적으로 저장이 완료되었습니다.</strong>
+        </div>
+
+        <div class="container-sm">
+          <div class="row mt-3 text-center border border-info border-2 ">
+            <span class="d-flex justify-content-center fs-1 fw-bold">계정정보 수정</span>
+          </div>
+          <div class="row row-cols-2 border border-info border-2">
+            <div class="col mt-3">
+              <div class="fw-bold">학번</div>
+              <div class="d-flex justify-content-start">
+                <input class="form-control text-center mt-1" id="disabledInput" type="text"
+                  placeholder="<%= result.id  %>" disabled="">
+              </div>
+            </div>
+            <div class="col mt-3">
+              <div class="fw-bold">이름</div>
+              <div class="justify-content-start form-group">
+                <input type="text" value="<%= result.name %>" class="form-control text-center mt-1 is-valid"
+                  id="nameValidInput">
+                <div class="invalid-feedback d-none" id="nameValidAlert">The Alert TEXT</div>
+              </div>
+            </div>
+            <div class="col mt-3">
+              <div class="fw-bold">전화번호</div>
+              <div class="justify-content-start form-group">
+                <input type="tel" value="<%= result.phone_num %>" class="form-control text-center mt-1 is-valid"
+                  id="phoneValidInput">
+                <div class="invalid-feedback d-none" id="phoneValidAlert">The Alert TEXT</div>
+              </div>
+            </div>
+            <div class="col mt-3">
+              <div class="fw-bold">이메일</div>
+              <div class="justify-content-start form-group">
+                <input type="email" value="<%= result.email %>" class="form-control text-center mt-1 is-valid"
+                  id="emailValidInput">
+                <div class="invalid-feedback d-none" id="emailValidAlert">The Alert TEXT</div>
+              </div>
+            </div>
+            <div class="col mt-3">
+              <div class="fw-bold">재학 상태</div>
+              <div class="d-flex justify-content-start">
+                <select id="stateSelect" class="form-select text-center mt-1">
+                  <option <%=result.state===0?'selected':'' %>>관리자</option>
+                  <option <%=result.state===1?'selected':'' %>>재학</option>
+                  <option <%=result.state===2?'selected':'' %>>휴학</option>
+                </select>
+              </div>
+            </div>
+            <!-- This is Empty Div -->
+            <div class="col"></div>
+            <div class="col-12 mt-3 mb-2 text-center">
+              <button class="btn btn-lg btn-primary w-50" type="button" id="save">수정 및 저장</button>
+            </div>
+          </div>
+          <div class="row mt-2">
+            <div class="col text-center">
+              <button class="btn btn-lg btn-primary w-50" type="button" onclick="history.back()">계정 목록으로 돌아가기</button>
+            </div>
+          </div>
+        </div>
+        <%- include(dir + '/src/views/common/footer' ) %>
+          <!-- Logic For Validation at Client Side -->
+          <script>
+            const phone = document.querySelector('#phoneValidInput');
+            const phoneAlert = document.querySelector('#phoneValidAlert');
+
+            const email = document.querySelector('#emailValidInput');
+            const emailAlert = document.querySelector('#emailValidAlert');
+
+            const name = document.querySelector('#nameValidInput');
+            const nameAlert = document.querySelector('#nameValidAlert');
+
+            const regRequired = /.{1,}/; //at least one
+
+            const nameValidation = () => {
+
+              const regEngOrKor = /^[가-힣a-zA-Z]{1,9}$/; // English Or Korean and max 9 length
+
+              if (!regRequired.test(name.value)) {
+                name.classList.remove('is-valid');
+                name.classList.add('is-invalid');
+                nameAlert.classList.remove('d-none');
+                nameAlert.textContent = '이름을 입력해 주세요.'
+                name.focus();
+              }
+              else if (!regEngOrKor.test(name.value)) {
+                name.classList.remove('is-valid');
+                name.classList.add('is-invalid');
+                nameAlert.classList.remove('d-none');
+                nameAlert.textContent = '입력된 이름이 너무 길거나 한국어 혹은 영어가 아닙니다.'
+                name.focus();
+              }
+              else {
+                name.classList.remove('is-invalid');
+                name.classList.add('is-valid');
+                nameAlert.classList.add('d-none');
+              }
+            }
+
+            const emailValidation = () => {
+
+              const regEmail = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,6}$/; // Eng or Kor @ domain . 2 ~ 6
+
+              if (!regEmail.test(email.value)) {
+                email.classList.remove('is-valid');
+                email.classList.add('is-invalid');
+                emailAlert.classList.remove('d-none');
+                emailAlert.textContent = '이메일 양식을 지켜주세요.'
+                email.focus();
+              }
+              else {
+                email.classList.remove('is-invalid');
+                email.classList.add('is-valid');
+                emailAlert.classList.add('d-none');
+              }
+            }
+
+            const phoneValidation = () => {
+              const regPhone = /^\d{3}-\d{3,4}-\d{4}$/; // 010 - 3 or 4 - 4
+
+              if (!regPhone.test(phone.value)) {
+                phone.classList.remove('is-valid');
+                phone.classList.add('is-invalid');
+                phoneAlert.classList.remove('d-none');
+                phoneAlert.textContent = '하이픈을 포함하여 전화번호 양식을 지켜주세요.'
+                phone.focus();
+              }
+              else {
+                phone.classList.remove('is-invalid');
+                phone.classList.add('is-valid');
+                phoneAlert.classList.add('d-none');
+              }
+            }
+
+            name.addEventListener('input', nameValidation);
+            email.addEventListener('input', emailValidation);
+            phone.addEventListener('input', phoneValidation);
+          </script>
+
+
+          <!-- FETCH -->
+          <script>
+            const PutDetail = () => {
+
+              const inputName = document.querySelector("#nameValidInput").value;
+              const inputPhone = document.querySelector("#phoneValidInput").value;
+              const inputEmail = document.querySelector("#emailValidInput").value;
+              const inputState = document.querySelector("#stateSelect").value;
+              const urlParam = new URLSearchParams(location.search);
+              const id = urlParam.get('id');
+
+              fetch('/assistant/auth/detail?id=' + window.location.search, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  Input_id: id,
+                  Input_name: inputName,
+                  Input_phone: inputPhone,
+                  Input_email: inputEmail,
+                  Input_state: inputState
+                })
+              })
+                .then((response) => {
+                  if (response.ok) return response.json()
+                  return Promise.reject(rejectResponse)
+                })
+                .then((data) => {
+                  document.querySelector("#saveAlert").classList.remove('d-none');
+                  setTimeout(() => {
+                    location.reload(true);
+                  }, 4000);
+                })
+                .catch((error) => {
+                  console.error(error);
+                })
+            }
+            const btn = document.querySelector("#save");
+            btn.addEventListener('click', PutDetail);
+          </script>
+    </body>
+
+    </html>

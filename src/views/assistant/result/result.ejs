@@ -1,0 +1,127 @@
+<% const dir=process.cwd() %>
+<!DOCTYPE html>
+<%- include(dir + '/src/views/common/head' ) %>
+
+<body>
+  <%- include(dir + '/src/views/common/navbar-admin' ) %>
+  <% if(success=false) { %>
+  <% results[0].year='error' ; results[0].semester='error' ; results[0].start='2022/01/01' ;
+                        results[0].end='2022/01/01' ; success=false; }%>
+
+  <div class="container-sm">
+    <div class="row row-cols-1">
+      <div class="col mt-3 text-center border border-info border-2 ">
+        <span class="d-flex justify-content-center fs-1 fw-bold">
+          <%= results[0].year %>년도 <%= results[0].semester %>학기 학생 심사결과 입력
+        </span>
+      </div>
+      <div class="col text-center border border-info border-2">
+        <table class="table  table-striped table-hover mt-2">
+          <thead>
+            <tr class="table-info">
+              <th scope="col" class="fs-5 fw-bold">
+                <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" onclick="selectAll(this)">
+              </th>
+              <th scope="col" class="fs-5 fw-bold">학번</th>
+              <th scope="col" class="fs-5 fw-bold">이름</th>
+              <th scope="col" class="fs-5 fw-bold">인증 종류</th>
+              <th scope="col" class="fs-5 fw-bold">처리 현황</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if(data===null || data.length===0){ %>
+            <tr class="table-danger">
+              <td colspan="5" class="fs-3">조회된 내역이 없습니다!</td>
+            </tr>
+            <% } %>
+            <% data.forEach(function(paper) { %>
+            <tr>
+              <td>
+                <input class="form-check-input" type="checkbox" id="">
+              </td>
+              <td>
+                <%= paper.id %>
+              </td>
+              <td>
+                <%= paper.name %>
+              </td>
+              <td>
+                <% if(paper.category===0){ %>
+                <span>졸업논문</span>
+                <% } else if(paper.category===1){ %>
+                <span>졸업작품</span>
+                <% } else if(paper.category===2){ %>
+                <span>장기현장실습</span>
+                <% } else if(paper.category===3){ %>
+                <span>학생창업</span>
+                <% } else {%>
+                <span>ERROR</span>
+                <% } %>
+              </td>
+              <td>
+                <% if(paper.approval==null){ %>
+                <span>-</span>
+                <% } else if(paper.approval==true){ %>
+                <span>합격</span>
+                <% } else {%>
+                <span>불합격</span>
+                <% } %>
+              </td>
+              <% }) %>
+
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="d-flex justify-content-start">
+          <button type="button" class="btn btn-lg btn-primary ms-1">선택 합격</button>
+          <button type="button" class="btn btn-lg btn-primary ms-3">선택 불합격</button>
+        </div>
+        <!--Pagination Variables-->
+        <% const offset=2; let previousBtnChecker=currentPage>1; let nextBtnChecker = currentPage<maxPage; %>
+        <!--Pagination-->
+        <div class="d-flex justify-content-center">
+          <div class="center-block">
+            <ul class="pagination">
+              <li class="page-item <%= previousBtnChecker?'':'disabled' %> ">
+                <a class="page-link" href="/assistant/result?page=<%= currentPage-1 %>" <%= previousBtnChecker?'':'tabindex="-1"' %>>&laquo;</a>
+              </li>
+              <% for(i=1; i<=maxPage ; i++){ %>
+              <% if(i==1 || i==maxPage || (i>=currentPage-offset && i<=currentPage+offset)){ %>
+              <li class="page-item <%= currentPage==i?' active':''%>">
+                <a class="page-link" href="/assistant/result?page=<%= i %>">
+                  <%= i %>
+                </a>
+              </li>
+              <% } else if(i==2 || i==maxPage-1){ %>
+              <li>
+                <a class="page-link">...</a>
+              </li>
+              <% } %>
+              <% } %>
+              <li class="page-item <%= nextBtnChecker?'':'disabled' %>">
+                <a class="page-link" href="/assistant/result?page=<%= currentPage+1 %>" <%= previousBtnChecker?'':'tabindex="-1"' %>>&raquo;</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <%- include(dir + '/src/views/common/footer' ) %>
+
+  <script>
+    // Function For Select AllCheckBox
+    function selectAll(selectAll) {
+      const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+      checkboxes.forEach((checkbox) => {
+        checkbox.checked = selectAll.checked
+      })
+    }
+
+    
+  </script>
+</body>
+
+</html>

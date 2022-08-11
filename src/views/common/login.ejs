@@ -1,0 +1,99 @@
+<% const dir=process.cwd() %>
+    <!DOCTYPE html>
+    <%- include(dir + '/src/views/common/head' ) %>
+
+        <body>
+            <!-- bootstrap5 alert -->
+            <div class="alert alert-dismissible alert-danger d-none" id="loginAlert">
+                <strong>
+                    <div id="alert-text"></div>
+                </strong>
+            </div>
+            <!-- html main -->
+            <div class="container-sm">
+                <div class="mt-4 p-3 text-center text-white border border-2 rounded-3 bg-primary bg-gradient ">
+                    <b>가천대학교 컴퓨터공학과 졸업인증</b>
+                </div>
+                <form onSubmit="return false;">
+                    <div class="form-group">
+                        <label for="InputID" class="form-label mt-4">아이디</label>
+                        <input type="text" class="form-control mb-1" id="InputID" aria-describedby="emailHelp"
+                            name="Input_ID" placeholder="아이디 입력" maxlength="10">
+                        <small id="Help" class="form-text text-muted">계정 아이디나 비밀번호를 모른다면 학과 사무실로 연락해 주세요.</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="InputPW" class="form-label mt-4">비밀번호</label>
+                        <input type="password" class="form-control" id="InputPW" name="Input_PW" placeholder="비밀번호 입력">
+                    </div>
+                    <div class="d-grid gap-2 mt-3 text-center">
+                        <button id="login" class="btn btn-primary btn-lg mt-3">로그인</button>
+                    </div>
+                </form>
+            </div>
+            <%- include(dir + '/src/views/common/footer' ) %>
+                <!-- login Logic -->
+                <script>
+                    const alert_box = document.querySelector("#loginAlert");
+                    const alert_text = document.querySelector("#alert-text");
+
+                    alert_box.classList.add('d-none');
+
+                    const Postlogin = () => {
+
+                        const inputID = document.querySelector("#InputID").value;
+                        const inputPW = document.querySelector("#InputPW").value;
+
+                        if (inputID == '' || inputPW == '') {
+                            if (alert_box.classList.contains('d-none')) {
+                                alert_box.classList.remove('d-none');
+                            }
+                            document.querySelector("#alert-text").textContent = '아이디나 비밀번호를 입력하세요.';
+                            return false;
+                        }
+
+                        fetch('/auth/login', {
+                            method: 'POST',
+                            mode: 'cors',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                Input_ID: inputID,
+                                Input_PW: inputPW
+                            })
+                        })
+                            .then((response) => {
+                                if (response.ok) {
+
+                                    return response.json() // html 200 ~ 299
+                                }
+                                return Promise.reject(rejectResponse)
+                            })
+                            .then((data) => {
+                                if (data.success === false) {
+                                    alert_text.textContent = '아이디나 비밀번호를 잘못 입력하셨거나 존재하지 않습니다.';
+                                }
+                                else {
+                                    if (data.state === 0) {
+                                        return window.location.replace('/assistant');
+                                    }
+                                    else if (data.state === 1) {
+                                        return window.location.replace('/student');
+                                    }
+                                    else {
+                                        alert_text.textContent = '귀하의 계정은 현재 재학중인 상태가 아닙니다. 자세한 사항은 학과사무실로 연락하세요.';
+                                        return data.success;
+                                    }
+                                }
+                                alert_box.classList.remove('d-none');
+                            })
+                            .catch((error) => {
+                                console.error(error);
+                            })
+                    }
+                    const btn = document.querySelector("#login");
+                    btn.addEventListener('click', Postlogin);
+                </script>
+        </body>
+
+        </html>

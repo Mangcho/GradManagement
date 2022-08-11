@@ -1,0 +1,71 @@
+<% const dir=process.cwd() %>
+  <!DOCTYPE html>
+  <%- include(dir + '/src/views/common/head' ) %>
+
+    <head>
+      <style>
+        .btn {
+          white-space: nowrap;
+        }
+      </style>
+    </head>
+
+    <body>
+      <%- include(dir + '/src/views/common/navbar-admin' ) %>
+        <div class="container-sm">
+          <div class="row row-cols-1">
+            <div class="col mt-3 text-center border border-info border-2 ">
+              <span class="d-flex justify-content-center fs-1 fw-bold">학생 계정정보 조회</span>
+            </div>
+            <div class="col text-center border border-info border-2">
+              <table class="table table-striped table-hover mt-2">
+                <thead>
+                  <tr class="table-info">
+                    <th scope="col" class="fs-5 fw-bold">학번</th>
+                    <th scope="col" class="fs-5 fw-bold">이름</th>
+                    <th scope="col" class="fs-5 fw-bold">전화번호</th>
+                    <th scope="col" class="fs-5 fw-bold">이메일</th>
+                    <th scope="col" class="fs-5 fw-bold">성공 여부</th>
+                    <th scope="col" class="fs-5 fw-bold">실패 사유</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% results.forEach(function(student) { %>
+                    <tr class="<%= student[5]=== true?'':'table-danger'%>">
+                      <td class="">
+                        <%= student[0] %>
+                      </td>
+                      <td>
+                        <%= student[1] %>
+                      </td>
+                      <td>
+                        <%= student[2] %>
+                      </td>
+                      <td>
+                        <%= student[3] %>
+                      </td>
+                      <td>
+                        <% if(student[4]===true){ %>
+                          <span>성공</span>
+                          <% } else { %>
+                            <span>실패</span>
+                            <% } %>
+                      </td>
+                      <td>
+                        <%= student[5] %>
+                      </td>
+                    </tr>
+                    <% }) %>
+                </tbody>
+              </table>
+              <button type="button" class="btn btn-primary btn-lg my-3" onclick="location.href='/assistant/auth'">계정 정보
+                조회로 돌아가기</button>
+            </div>
+          </div>
+        </div>
+
+        <%- include(dir + '/src/views/common/footer' ) %>
+
+    </body>
+
+    </html>

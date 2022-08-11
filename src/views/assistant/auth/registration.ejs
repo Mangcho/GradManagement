@@ -1,0 +1,82 @@
+<% const dir=process.cwd() %>
+  <!DOCTYPE html>
+  <%- include(dir + '/src/views/common/head' ) %>
+
+    <head>
+      <style>
+        .btn {
+          white-space: nowrap;
+        }
+      </style>
+    </head>
+
+    <body>
+      <%- include(dir + '/src/views/common/navbar-admin' ) %>
+        <div class="container-sm">
+          <div class="row row-cols-1">
+            <div class="col mt-3 text-center border border-info border-2">
+              <span class="d-flex justify-content-center fs-1 fw-bold">학생 계정 추가</span>
+            </div>
+            <div class="col text-center border border-info border-2">
+              <p>
+                안녕하세요 계정 추가시 유의사항입니다.
+                <br>
+                1. <br>
+                2. <br>
+                3. <br>
+                입니다. 참고하시어 사용부탁드립니다.
+              </p>
+            </div>
+            <div class="col text-center border border-info border-2">
+              <!-- Download Template -->
+              <div class="form-group d-flex justify-content-center my-3">
+                <button class="btn btn-primary" type="button" onclick="location.href=location.pathname + '/download'">다운로드</button>
+                <input type="text" class="form-control w-50" placeholder="학생 계정 추가 양식 파일" aria-label="Recipient'"
+                  aria-describedby="button-addon2" disabled>
+              </div>
+              <!-- Upload File -->
+              <div class="form-group d-flex justify-content-center my-3">
+                <form action= "/assistant/auth/registration" enctype="multipart/form-data" method="post">
+                  <input class="form-control d-none" type="file" accept=".xlsx" id="realUpload" name="uploaded_file">
+                  <button type="submit" class="d-none" id="realSubmit">제출</button>
+                </form>
+                <button class="btn btn-primary" type="button" id="fakeUpload">파일 선택</button>
+                <input type="text" class="form-control w-50" placeholder="선택된 파일 없음" id="fakeLabel" disabled>
+              </div>
+              <div class="d-grid gap-2">
+                <button class="btn btn-lg btn-primary" type="button" id="fakeSubmit">학생 계정 생성</button>
+                <button class="btn btn-lg btn-primary mb-3" type="button" onclick="history.back()">돌아가기</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <%- include(dir + '/src/views/common/footer' ) %>
+
+        <!-- Fake Upload -->
+          <script>
+            // Upload
+            const upload = document.querySelector("#fakeUpload");
+            const label = document.querySelector("#fakeLabel");
+            const real = document.querySelector("#realUpload");
+
+            const filenameChecker = () => {
+              if (real.files.length === 0) {
+              }
+              else {
+                console.log(real.files[0].value);
+                label.placeholder = real.files[0].name;
+              }
+            }
+
+            upload.addEventListener('click', ()=>real.click());
+            real.addEventListener('input', filenameChecker);
+
+            // POST Form
+            const realBtn = document.querySelector("#realSubmit");
+            const fakeBtn = document.querySelector("#fakeSubmit");
+
+            fakeBtn.addEventListener('click', ()=>realBtn.click());
+          </script>
+    </body>
+
+    </html>

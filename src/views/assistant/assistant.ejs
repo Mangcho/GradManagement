@@ -1,0 +1,64 @@
+<% const dir=process.cwd() %>
+    <!DOCTYPE html>
+    <%- include(dir + '/src/views/common/head' ) %>
+
+        <head>
+            <script src="https://cdn.jsdelivr.net/npm/chart.js@3.8.0/dist/chart.min.js"></script>
+        </head>
+
+        <body>
+            <%- include(dir + '/src/views/common/navbar-admin' ) %>
+                <div class="container-sm">
+                    <div class="row row-cols-1">
+                        <div class="col mt-4 p-3 text-center text-white border border-info border-2">
+                            <h1>이곳은 졸업인증 일정이 들어갈 예정입니다.</h1>
+                        </div>
+                        <div class="col mt-5 text-center text-white border border-info border-2">
+                            <h3>현재학기 요약 인포그래픽</h3>
+                        </div>
+                        <div class="p-3 text-center text-white border border-info border-2">
+                            <div class="form-group">
+                                <h1>이곳에는 인포그래픽이 들어갑니다.</h1>
+                                <canvas id="myChart" width="20" height="20"></canvas>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <%- include(dir + '/src/views/common/footer' ) %>
+        </body>
+
+
+        <script>
+            const labels = [
+                'January',
+                'February',
+                'March',
+                'April',
+                'May',
+                'June'
+            ];
+
+            const data = {
+                labels: labels,
+                datasets: [{
+                    label: 'My First dataset',
+                    backgroundColor: 'rgb(255, 99, 132)',
+                    borderColor: 'rgb(255, 99, 132)',
+                    data: [0, 10, 5, 2, 20, 30, 45]
+                }]
+            };
+
+            const config = {
+                type: 'line',
+                data: data,
+                options: {}
+            };
+
+            const myChart = new Chart(
+                document.getElementById('myChart'),
+                config
+            );
+        </script>
+
+        </html>
