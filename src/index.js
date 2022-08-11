@@ -14,6 +14,7 @@ const assistantRegist = require('./routes/assistant/registration.js');
 const assistantApplication = require('./routes/assistant/application/application.js');
 const assistantSchedule = require('./routes/assistant/application/schedule.js');
 const assistantResult = require('./routes/assistant/result/result.js');
+const assistantCertificate = require('./routes/assistant/result/certificate.js');
 
 // 서버 기본 세팅
 const app = express();
@@ -48,6 +49,7 @@ app.use('/assistant/auth/registration', assistantRegist);
 app.use('/assistant/application', assistantApplication);
 app.use('/assistant/schedule', assistantSchedule);
 app.use('/assistant/result', assistantResult);
+app.use('/assistant/certificate', assistantCertificate);
 
 
 

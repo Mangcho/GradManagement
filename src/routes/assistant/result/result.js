@@ -27,7 +27,7 @@ const GetResult = (req, res) => {
 
     db.query(sql1, function (error, results1) {
         if (error) { // 애러 핸들링
-            console.log("DB query error at SCHEDULE : ", error);
+            console.log("DB query error at RESULT : ", error);
             return res.render(__dirname + '/../../../views/assistant/result/result.ejs', { success: false })
         }
         const sql2 = 'SELECT student_id, schedule_year, schedule_semester FROM RESULT ' +
@@ -37,13 +37,14 @@ const GetResult = (req, res) => {
         'FROM RESULT LEFT JOIN STUDENT ' +
         'ON RESULT.student_id = STUDENT.id ' + 
         'LEFT JOIN SCHEDULE ON RESULT.schedule_year = SCHEDULE.year AND RESULT.schedule_semester = SCHEDULE.semester ' +
-        'WHERE SCHEDULE.year = '+ results1[0].year + ' AND SCHEDULE.semester = "' + results1[0].semester + '" LIMIT 20 OFFSET ' + Number((page - 1) * 20) + ';';
+        'WHERE SCHEDULE.year = '+ results1[0].year + ' AND SCHEDULE.semester = "' + results1[0].semester + '" ' + 'ORDER BY approval ' +
+        'LIMIT 20 OFFSET ' + Number((page - 1) * 20) + ';';
 
         db.query(sql2 + sql3, function (error, results2) {
             const maxPage = Math.ceil(results2[0].length / 20);
             
             if (error) { // 애러 핸들링
-                console.log("DB query error at SCHEDULE : ", error);
+                console.log("DB query error at RESULT : ", error);
                 return res.render(__dirname + '/../../../views/assistant/result/result.ejs', { success: false })
             }
             return res.render(__dirname + '/../../../views/assistant/result/result.ejs', { success: true, results: results1, data: results2[1], currentPage: page, maxPage: maxPage });
@@ -53,8 +54,36 @@ const GetResult = (req, res) => {
     })
 }
 
+const PutResult = (req, res) => {
+    const {isPass, data} = req.body;
+    let sql;
+    if(data == undefined){
+        return res.send({success:false});
+    }
+    if(isPass == true){
+        sql = 'UPDATE RESULT SET approval = true WHERE student_id = "';
+        const a = data.join('" OR student_id = "');
+        sql = sql + a + '";';
+    }
+    else {
+        sql = 'UPDATE RESULT SET approval = false WHERE student_id = "';
+        const a = data.join('" OR student_id = "');
+        sql = sql + a + '";';
+    }
+    
+    console.log(sql);
+
+    db.query(sql, function(error, results){
+        if (error) { // 애러 핸들링
+            console.log("DB query error at RESULT : ", error);
+            return res.send({ success: false })
+        }
+        return res.send({ success: true })
+    })
+}
 
 
 router.get('/', GetResult);
+router.put('/', PutResult);
 
 module.exports = router;

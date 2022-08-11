@@ -1,109 +1,104 @@
 <% const dir=process.cwd() %>
-  <!DOCTYPE html>
-  <%- include(dir + '/src/views/common/head' ) %>
+<!DOCTYPE html>
+<%- include(dir + '/src/views/common/head' ) %>
 
-    <body>
-      <%- include(dir + '/src/views/common/navbar-admin' ) %>
-        <div class="container-sm">
-          <div class="row row-cols-1">
-            <div class="col mt-3 text-center border border-info border-2 ">
-              <span class="d-flex justify-content-center fs-1 fw-bold">학생 계정정보 조회</span>
-            </div>
-            <div class="col text-center border border-info border-2">
-              <button type="button" class="btn btn-primary me-5"
-                onclick="location.href='/assistant/auth/registration'">학생 계정 추가</button>
-              <strong class="me-3 fs-4 align-middle">학번 조회</strong>
-              <div class="d-inline-flex mt-2">
-                <input class="form-control me-sm-2" type="text" placeholder="학번을 입력하세요." id="searchInput">
-                <button class="btn btn-secondary my-2 my-sm-0" id="search">검색</button>
-              </div>
-              <table class="table  table-striped table-hover mt-2">
-                <thead>
-                  <tr class="table-info">
-                    <th scope="col" class="fs-5 fw-bold">이름</th>
-                    <th scope="col" class="fs-5 fw-bold">학번</th>
-                    <th scope="col" class="fs-5 fw-bold">상태</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <% if(results===null || results.length===0){ %>
-                    <tr class="table-danger">
-                      <td colspan="3" class="fs-3">조회된 내역이 없습니다!</td>
-                    </tr>
-                    <% } %>
-                      <% results.forEach(function(student) { %>
-                        <tr onclick="location.href='/assistant/auth/detail?id=<%= student.id %>'"
-                          class="<%= student.state=== 2?'table-danger':''%> <%= student.state=== 0?'table-primary':''%>">
-                          <td class="">
-                            <%= student.name %>
-                          </td>
-                          <td>
-                            <%= student.id %>
-                          </td>
-                          <td>
-                            <% if(student.state===0){ %>
-                              <span>관리자</span>
-                              <% } else if(student.state===1){ %>
-                                <span>재학</span>
-                                <% } else if(student.state===2){ %>
-                                  <span>휴학</span>
-                                  <% } %>
-                          </td>
-                        </tr>
-                        <% }) %>
-                </tbody>
-              </table>
-              <!--Pagination Variables-->
-              <% const offset=2; let previousBtnChecker=currentPage>1; let nextBtnChecker = currentPage<maxPage; %>
-                  <!--Pagination-->
-                  <div class="d-flex justify-content-center">
-                    <div class="center-block">
-                      <ul class="pagination">
-                        <li class="page-item <%= previousBtnChecker?'':'disabled' %> ">
-                          <a class="page-link" href="/assistant/auth?page=<%= currentPage-1 %>"
-                            <%=previousBtnChecker?'':'tabindex="-1"' %>>&laquo;</a>
-                    </li>
-                    <% for(i=1; i<=maxPage ; i++){ %>
-                      <% if(i==1 || i==maxPage || (i>=currentPage-offset && i<=currentPage+offset)){ %> 
-                    <li class="page-item <%= currentPage==i?' active':''%>">
-                            <a class="page-link" href="/assistant/auth?page=<%= i %>">
-                              <%= i %>
-                            </a>
-                        </li>
-                        <% } else if(i==2 || i==maxPage-1){ %>
-                          <li>
-                            <a class="page-link">...</a>
-                          </li>
-                          <% } %>
-                            <% } %>
-                              <li class="page-item <%= nextBtnChecker?'':'disabled' %>">
-                                <a class="page-link" href="/assistant/auth?page=<%= currentPage+1 %>"
-                                  <%=previousBtnChecker?'':'tabindex="-1"' %>>&raquo;</a>
-                          </li>
-                      </ul>
-                    </div>
-                  </div>
-
-            </div>
+<body>
+  <%- include(dir + '/src/views/common/navbar-admin' ) %>
+  <div class="container-sm">
+    <div class="row row-cols-1">
+      <div class="col mt-3 text-center border border-info border-2 ">
+        <span class="d-flex justify-content-center fs-1 fw-bold">학생 계정정보 조회</span>
+      </div>
+      <div class="col text-center border border-info border-2">
+        <button type="button" class="btn btn-primary me-5" onclick="location.href='/assistant/auth/registration'">학생 계정 추가</button>
+        <strong class="me-3 fs-4 align-middle">학번 조회</strong>
+        <div class="d-inline-flex mt-2">
+          <input class="form-control me-sm-2" type="text" placeholder="학번을 입력하세요." id="searchInput">
+          <button class="btn btn-secondary my-2 my-sm-0" id="search">검색</button>
+        </div>
+        <table class="table  table-striped table-hover mt-2">
+          <thead>
+            <tr class="table-info">
+              <th scope="col" class="fs-5 fw-bold">이름</th>
+              <th scope="col" class="fs-5 fw-bold">학번</th>
+              <th scope="col" class="fs-5 fw-bold">상태</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if(results===null || results.length===0){ %>
+            <tr class="table-danger">
+              <td colspan="3" class="fs-3">조회된 내역이 없습니다!</td>
+            </tr>
+            <% } %>
+            <% results.forEach(function(student) { %>
+            <tr onclick="location.href='/assistant/auth/detail?id=<%= student.id %>'" class="<%= student.state=== 2?'table-danger':''%> <%= student.state=== 0?'table-primary':''%>">
+              <td class="">
+                <%= student.name %>
+              </td>
+              <td>
+                <%= student.id %>
+              </td>
+              <td>
+                <% if(student.state===0){ %>
+                <span>관리자</span>
+                <% } else if(student.state===1){ %>
+                <span>재학</span>
+                <% } else if(student.state===2){ %>
+                <span>휴학</span>
+                <% } %>
+              </td>
+            </tr>
+            <% }) %>
+          </tbody>
+        </table>
+        <!--Pagination Variables-->
+        <% const offset=2; let previousBtnChecker=currentPage>1; let nextBtnChecker = currentPage<maxPage; %>
+        <!--Pagination-->
+        <div class="d-flex justify-content-center">
+          <div class="center-block">
+            <ul class="pagination">
+              <li class="page-item <%= previousBtnChecker?'':'disabled' %> ">
+                <a class="page-link" href="/assistant/auth?page=<%= currentPage-1 %>" <%=previousBtnChecker?'':'tabindex="-1"' %>>&laquo;</a>
+              </li>
+              <% for(i=1; i<=maxPage ; i++){ %>
+              <% if(i==1 || i==maxPage || (i>=currentPage-offset && i<=currentPage+offset)){ %>
+              <li class="page-item <%= currentPage==i?' active':''%>">
+                <a class="page-link" href="/assistant/auth?page=<%= i %>">
+                  <%= i %>
+                </a>
+              </li>
+              <% } else if(i==2 || i==maxPage-1){ %>
+              <li>
+                <a class="page-link">...</a>
+              </li>
+              <% } %>
+              <% } %>
+              <li class="page-item <%= nextBtnChecker?'':'disabled' %>">
+                <a class="page-link" href="/assistant/auth?page=<%= currentPage+1 %>" <%=previousBtnChecker?'':'tabindex="-1"' %>>&raquo;</a>
+              </li>
+            </ul>
           </div>
         </div>
-        <%- include(dir + '/src/views/common/footer') %>
 
-                                  <!-- Search Function -->
-                                  <script>
-                                    const btn = document.querySelector("#search");
+      </div>
+    </div>
+  </div>
+  <%- include(dir + '/src/views/common/footer') %>
 
-                                    const GetSearch = () => {
-                                      const inputId = document.querySelector("#searchInput").value;
-                                      if (inputId) {
-                                        return location.href = "/assistant/auth?search=" + inputId;
-                                      }
-                                      else {
-                                        return;
-                                      }
-                                    }
-                                    btn.addEventListener('click', GetSearch);
-                                  </script>
-    </body>
+  <!-- Search Function -->
+  <script>
+    const btn = document.querySelector("#search");
 
-    </html>
+    const GetSearch = () => {
+      const inputId = document.querySelector("#searchInput").value;
+      if (inputId) {
+        return location.href = "/assistant/auth?search=" + inputId;
+      } else {
+        return;
+      }
+    }
+    btn.addEventListener('click', GetSearch);
+  </script>
+</body>
+
+</html>

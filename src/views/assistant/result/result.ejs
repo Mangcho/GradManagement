@@ -7,7 +7,9 @@
   <% if(success=false) { %>
   <% results[0].year='error' ; results[0].semester='error' ; results[0].start='2022/01/01' ;
                         results[0].end='2022/01/01' ; success=false; }%>
-
+  <div class="alert alert-success d-none" id="alert_box">
+    <strong id="alert_mention"></strong>
+  </div>
   <div class="container-sm">
     <div class="row row-cols-1">
       <div class="col mt-3 text-center border border-info border-2 ">
@@ -37,7 +39,7 @@
             <% data.forEach(function(paper) { %>
             <tr>
               <td>
-                <input class="form-check-input" type="checkbox" id="">
+                <input class="form-check-input" type="checkbox" name="check-input" value="<%= paper.id %>">
               </td>
               <td>
                 <%= paper.id %>
@@ -74,8 +76,8 @@
         </table>
 
         <div class="d-flex justify-content-start">
-          <button type="button" class="btn btn-lg btn-primary ms-1">선택 합격</button>
-          <button type="button" class="btn btn-lg btn-primary ms-3">선택 불합격</button>
+          <button class="btn btn-lg btn-primary ms-1" value="true" id="btnPass">선택 합격</button>
+          <button class="btn btn-lg btn-primary ms-3" value="false" id="btnFail">선택 불합격</button>
         </div>
         <!--Pagination Variables-->
         <% const offset=2; let previousBtnChecker=currentPage>1; let nextBtnChecker = currentPage<maxPage; %>
@@ -120,7 +122,103 @@
       })
     }
 
-    
+    // FETCH
+    const box = document.querySelector('#alert_box');
+    const input = document.querySelector('#searchInput');
+    const mention = document.querySelector('#alert_mention');
+
+    const btnPass = document.querySelector("#btnPass");
+    const btnFail = document.querySelector("#btnFail");
+
+    function PutResetPass() {
+      const selected_length = document.getElementsByName("check-input").length;
+      const array = new Array();
+
+      for (let i = 0; i < selected_length; i++) {
+        if (document.getElementsByName("check-input")[i].checked == true) {
+          array.push(document.getElementsByName("check-input")[i].value)
+        }
+      }
+      fetch('/assistant/result', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            isPass: true,
+            data: array
+          })
+        })
+        .then((response) => {
+          if (response.ok) {
+            box.classList.add('d-none');
+            return response.json();
+          }
+          return Promise.reject()
+        })
+        .then((data) => {
+          if (data.success == true) {
+            box.classList.remove('alert-danger');
+            box.classList.add('alert-success');
+            mention.textContent = '정상적으로 적용되었습니다.';
+          } else {
+            box.classList.remove('alert-success');
+            box.classList.add('alert-danger');
+            mention.textContent = '적용에 실패하였습니다.';
+          }
+          box.classList.remove('d-none');
+        })
+        .catch((error) => {
+          console.error(error);
+        })
+    }
+
+    function PutResetFail() {
+      const selected_length = document.getElementsByName("check-input").length;
+      const array = new Array();
+
+      for (let i = 0; i < selected_length; i++) {
+        if (document.getElementsByName("check-input")[i].checked == true) {
+          array.push(document.getElementsByName("check-input")[i].value)
+        }
+      }
+      fetch('/assistant/result', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            isPass: false,
+            data: array
+          })
+        })
+        .then((response) => {
+          if (response.ok) {
+            box.classList.add('d-none');
+            return response.json();
+          }
+          return Promise.reject()
+        })
+        .then((data) => {
+          if (data.success == true) {
+            box.classList.remove('alert-danger');
+            box.classList.add('alert-success');
+            mention.textContent = '정상적으로 적용되었습니다.';
+          } else {
+            box.classList.remove('alert-success');
+            box.classList.add('alert-danger');
+            mention.textContent = '적용에 실패하였습니다.';
+          }
+          box.classList.remove('d-none');
+        })
+        .catch((error) => {
+          console.error(error);
+        })
+    }
+
+    btnPass.addEventListener('click', PutResetPass);
+    btnFail.addEventListener('click', PutResetFail);
+
   </script>
 </body>
 
