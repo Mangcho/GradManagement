@@ -60,7 +60,7 @@ const GetStudentDetail = (req, res) => {
             console.log("DB query error!");
             throw error;
         }
-        return res.render(__dirname + '/../../views/assistant/auth/idDetail.ejs', { result: results[0], query: req.query.id });
+        return res.render(__dirname + '/../../views/assistant/auth/idDetail.ejs', { result: results[0]});
     })
 }
 

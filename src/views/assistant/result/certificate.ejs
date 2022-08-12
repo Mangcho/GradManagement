@@ -26,7 +26,40 @@
             </tr>
           </thead>
           <tbody>
-           
+            <% if(data===null || data.length===0){ %>
+            <tr class="table-danger">
+              <td colspan="5" class="fs-3">조회된 내역이 없습니다!</td>
+            </tr>
+            <% } %>
+            <% data.forEach(function(cert) { %>
+            <tr>
+              <td>
+                <%= cert.schedule_year %>년도 <%= cert.schedule_semester %>학기
+              </td>
+              <td>
+                <%= cert.name %>
+              </td>
+              <td>
+                <%= cert.id  %>
+              </td>
+              <td>
+                <% if(cert.category===0){ %>
+                <span>졸업논문</span>
+                <% } else if(cert.category===1){ %>
+                <span>졸업작품</span>
+                <% } else if(cert.category===2){ %>
+                <span>장기현장실습</span>
+                <% } else if(cert.category===3){ %>
+                <span>학생창업</span>
+                <% } else {%>
+                <span>ERROR</span>
+                <% } %>
+              </td>
+              <td>
+                <%= cert.timestamp %>
+              </td>
+              <% }) %>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -41,7 +74,7 @@
     const GetSearch = () => {
       const inputId = document.querySelector("#searchInput").value;
       if (inputId) {
-        return location.href = "/assistant/auth?search=" + inputId;
+        return location.href = "/assistant/certificate?search=" + inputId;
       } else {
         return;
       }

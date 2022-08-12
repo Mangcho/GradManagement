@@ -1,0 +1,111 @@
+<% const dir=process.cwd() %>
+<!DOCTYPE html>
+<%- include(dir + '/src/views/common/head' ) %>
+
+<body>
+  <%- include(dir + '/src/views/common/navbar-admin' ) %>
+  <!-- bootstrap5 PUT result alert -->
+  <div class="alert alert-dismissible alert-success d-none" id="saveAlert">
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    <strong id="alert-text">정상적으로 저장이 완료되었습니다.</strong>
+  </div>
+
+  <div class="container-sm">
+    <div class="row d-flex justify-content-around text-center my-3 ">
+      <div class="col border">
+        <% if(paper.timestamp == null){ %>
+        <span>-</span>
+        <% }else{ %>
+        <%= paper.timestamp %>
+        <% } %>
+      </div>
+      <div class="col border border-start-0">
+        <%= paper.student_id %>
+      </div>
+      <div class="col border border-start-0">
+        <%= paper.name %>
+      </div>
+      <div class="col border border-start-0">
+        <% if(paper.approval == null){ %>
+        <span>-</span>
+        <% }else if(paper.approval == true){ %>
+        <span>접수승인</span>
+        <% }else{ %>
+        <span>접수거부</span>
+        <% } %>
+      </div>
+    </div>
+    <div class="row align-items-center">
+      <div class="col">
+        <span class="fs-3">범주</span>
+      </div>
+      <div class="col d-flex justify-content-around align-items-center my-3">
+        <div class="d-flex justify-content-start p-1 rounded" style="background-color: rgba(0, 0, 0, 0.15);">
+          <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" disabled>
+          <span class="ms-2 fs-5">졸업논문</span>
+        </div>
+      </div>
+      <div class="col d-flex justify-content-around my-3">
+        <div class="d-flex justify-content-start p-1 rounded" style="background-color: rgba(0, 0, 0, 0.15);">
+          <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" disabled>
+          <span class="ms-2 fs-5">졸업작품</span>
+        </div>
+      </div>
+      <div class="col d-flex justify-content-around my-2">
+        <div class="d-flex justify-content-start p-1 rounded" style="background-color: rgba(0, 0, 0, 0.15);">
+          <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" disabled>
+          <span class="ms-2 fs-5">장기현장실습</span>
+        </div>
+      </div>
+      <div class="col d-flex justify-content-around my-2">
+        <div class="d-flex justify-content-start p-1 rounded" style="background-color: rgba(0, 0, 0, 0.15);">
+          <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" disabled>
+          <span class="ms-2 fs-5">학생창업</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- teammates-->
+    <div class="row  align-items-center">
+      <div class="col my-3">
+        <span class="fs-3 float-start">팀원 명단</span>
+      </div>
+
+      <div class="col d-flex justify-content-around my-3">
+        <span class="border-top border-bottom border-dark w-100 text-center p-2" style="background-color: rgba(0, 0, 0, 0.15);">123456789 김아이</span>
+      </div>
+      <div class="col d-flex justify-content-around my-3">
+        <span class="border-top border-bottom border-dark w-100 text-center p-2" style="background-color: rgba(0, 0, 0, 0.15);">123456789 김아이</span>
+      </div>
+      <div class="col d-flex justify-content-around my-3">
+        <span class="border-top border-bottom border-dark w-100 text-center p-2" style="background-color: rgba(0, 0, 0, 0.15);">123456789 김아이</span>
+      </div>
+      <div class="col d-flex justify-content-around my-3">
+        <span class="border-top border-bottom border-dark w-100 text-center p-2" style="background-color: rgba(0, 0, 0, 0.15);">123456789 김아이</span>
+      </div>
+    </div>
+
+    <div class="row my-3">
+      <div class="form-group d-flex justify-content-center my-3">
+        <form action="/assistant/auth/registration" enctype="multipart/form-data" method="post">
+          <input class="form-control d-none" type="file" accept=".xlsx" id="realUpload" name="uploaded_file">
+          <button type="submit" class="d-none" id="realSubmit">제출</button>
+        </form>
+        <button class="btn btn-primary" type="button" id="fakeUpload">다운로드</button>
+        <input type="text" class="form-control w-50" placeholder="선택된 파일 없음" id="fakeLabel" disabled>
+      </div>
+    </div>
+    <div class="row justify-content-evenly mb-2">
+      <button class="btn btn-lg btn-primary w-25" type="button" id="save">승인</button>
+      <button class="btn btn-lg btn-primary w-25" type="button" id="save">거부</button>
+    </div>
+  </div>
+  <%- include(dir + '/src/views/common/footer' ) %>
+  <!-- FETCH -->
+  <script>
+
+  </script>
+
+</body>
+
+</html>

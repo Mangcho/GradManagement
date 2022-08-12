@@ -31,7 +31,7 @@
                 </thead>
                 <tbody>
                   <% results.forEach(function(student) { %>
-                    <tr class="<%= student[5]=== true?'':'table-danger'%>">
+                    <tr class="<%= student[4]=== true?'':'table-danger'%>">
                       <td class="">
                         <%= student[0] %>
                       </td>
@@ -45,7 +45,7 @@
                         <%= student[3] %>
                       </td>
                       <td>
-                        <% if(student[4]===true){ %>
+                        <% if(student[4]==true){ %>
                           <span>성공</span>
                           <% } else { %>
                             <span>실패</span>
