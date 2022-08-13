@@ -1,0 +1,62 @@
+<% const dir=process.cwd() %>
+<!DOCTYPE html>
+<html lang="ko">
+<%- include(dir + '/src/views/common/head' ) %>
+
+<head>
+  <script src="/javascripts/ckeditor.js"></script>
+  <style>
+    .ck-editor__editable{
+      min-height: 100px;
+    }
+  </style>
+</head>
+
+<body>
+  <%- include(dir + '/src/views/common/navbar-admin' ) %>
+  <% //result.content  %>
+
+  <div class="container-sm mt-3">
+    <div class="title">
+      <div class="mt-1 mb-3">
+        <span class="badge bg-info fs-6 fw-bold">
+          공지사항
+        </span>
+      </div>
+      <div class="border-bottom rounded-3 p-1 shadow-sm" style="background-color: rgba(0,0,0,0.01);">
+        <div class="fs-3 ms-2">
+          <strong><%= result.title %> </strong>
+        </div>
+        <div class="mt-4 mb-2">
+          <span class="fs-6 fw-bold me-5 ms-2"><i class="bi bi-mortarboard-fill"></i> 컴퓨터공학과 조교</span>
+          <span class="me-1">작성시각 : </span>
+          <span class="fw-lighter"><%= result.timestamp %> </span>
+        </div>
+      </div>
+    </div>
+    <div class="content mt-2">
+    </div>
+  </div>
+  <%- include(dir + '/src/views/common/footer' ) %>
+
+  <script>
+    // EJS content DATA
+    const test = '<%- JSON.parse(result.content) %>';
+
+    // Add CKEditor 5
+    ClassicEditor
+      .create(document.querySelector('.content'))
+      .then(newEditor => {
+        const toolbarElement = newEditor.ui.view.toolbar.element;
+        toolbarElement.style.display = 'none';
+        newEditor.ui.view.editable.element.style.height = '500px';
+        newEditor.enableReadOnlyMode('unique_key');
+        newEditor.setData(test);
+      })
+      .catch(error => {
+        console.error(error);
+      });
+  </script>
+</body>
+
+</html>

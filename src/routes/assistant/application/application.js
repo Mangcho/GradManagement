@@ -10,7 +10,7 @@ const db = mysql.createPool({
     database: process.env.DB_NAME,
     connectionLimit: process.env.DB_CONN_LIMIT,
     dateStrings: true, // return DATE type
-    multipleStatements: true 
+    multipleStatements: true
 });
 
 const GetApplication = (req, res) => {
@@ -32,14 +32,14 @@ const GetApplication = (req, res) => {
             return res.render(__dirname + '/../../../views/assistant/application/application.ejs', { success: false })
         }
         const sql2 = 'SELECT student_id, schedule_year, schedule_semester FROM APPLICATION ' +
-        'WHERE schedule_year = '+ results1[0].year + ' AND schedule_semester = "' + results1[0].semester + '";';
+            'WHERE schedule_year = ' + results1[0].year + ' AND schedule_semester = "' + results1[0].semester + '";';
 
         const sql3 = 'SELECT STUDENT.id, STUDENT.name, category, teammates, file, timestamp, approval, schedule_year, schedule_semester ' +
-        'FROM APPLICATION LEFT JOIN STUDENT ' +
-        'ON APPLICATION.student_id = STUDENT.id ' + 
-        'LEFT JOIN SCHEDULE ON APPLICATION.schedule_year = SCHEDULE.year AND APPLICATION.schedule_semester = SCHEDULE.semester ' +
-        'WHERE SCHEDULE.year = '+ results1[0].year + ' AND SCHEDULE.semester = "' + results1[0].semester + '" ORDER BY approval ' +
-        'LIMIT 20 OFFSET ' + Number((page - 1) * 20) + ';';
+            'FROM APPLICATION LEFT JOIN STUDENT ' +
+            'ON APPLICATION.student_id = STUDENT.id ' +
+            'LEFT JOIN SCHEDULE ON APPLICATION.schedule_year = SCHEDULE.year AND APPLICATION.schedule_semester = SCHEDULE.semester ' +
+            'WHERE SCHEDULE.year = ' + results1[0].year + ' AND SCHEDULE.semester = "' + results1[0].semester + '" ORDER BY approval ' +
+            'LIMIT 20 OFFSET ' + Number((page - 1) * 20) + ';';
 
         db.query(sql2 + sql3, function (error, results2) {
             if (error) { // 애러 핸들링
@@ -50,25 +50,62 @@ const GetApplication = (req, res) => {
 
             return res.render(__dirname + '/../../../views/assistant/application/application.ejs', { success: true, results: results1, data: results2[1], currentPage: page, maxPage: maxPage });
         })
-        
-        
+
+
     })
 }
 
+
+const PutApplication = (req, res) => {
+    if (req.body.isPass == true) {
+        const { isPass, data } = req.body;
+
+        let sql = 'UPDATE APPLICATION SET approval = true WHERE student_id = "';
+        const a = data.join('" OR student_id = "');
+        sql = sql + a + '";';
+
+        db.query(sql, function (error, results) {
+            if (error) { // 애러 핸들링
+                console.log("DB query error! : Application Detail ", error);
+                return res.send({ success: false });
+            }
+            return res.send({ success: true });
+        })
+    } else {
+        const { isPass, data, reason } = req.body;
+
+        let sql = 'UPDATE APPLICATION SET approval = false, reason = "'+ reason + '" WHERE student_id ="';
+        const a = data.join('" OR student_id = "');
+        sql = sql + a + '";';
+        db.query(sql, function (error, results) {
+            if (error) { // 애러 핸들링
+                console.log("DB query error! : Application Detail ", error);
+                return res.send({ success: false });
+            }
+            return res.send({ success: true });
+        })
+
+    }
+}
+
+
 GetApplicationDetail = (req, res) => {
     const sql = 'SELECT APPLICATION.id, student_id, STUDENT.name, category, teammates, file, timestamp, approval FROM APPLICATION ' +
-    'LEFT JOIN STUDENT ON APPLICATION.student_id = STUDENT.id WHERE student_id="' + req.query.id + '";';
+        'LEFT JOIN STUDENT ON APPLICATION.student_id = STUDENT.id WHERE student_id="' + req.query.id + '";';
     db.query(sql, function (error, results) {
         if (error) { // 애러 핸들링
             console.log("DB query error! : Application Detail");
             throw error;
         }
-        return res.render(__dirname + '/../../../views/assistant/application/applicationDetail.ejs', { paper: results[0], query: req.query.id });
+        console.log(JSON.parse(results[0].teammates));
+        const team = JSON.parse(results[0].teammates);
+        return res.render(__dirname + '/../../../views/assistant/application/applicationDetail.ejs', { paper: results[0], teammates: team });
     })
 }
 
 
 router.get('/', GetApplication);
+router.put('/', PutApplication);
 router.get('/detail', GetApplicationDetail);
 
 

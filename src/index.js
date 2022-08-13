@@ -1,6 +1,6 @@
-// Import
+// Import Module
 const path = require('path');
-require('dotenv').config() // 환경변수 세팅
+require('dotenv').config() // process.env config
 const express = require('express');
 const session = require('express-session');
 const favicon = require('serve-favicon');
@@ -15,8 +15,9 @@ const assistantApplication = require('./routes/assistant/application/application
 const assistantSchedule = require('./routes/assistant/application/schedule.js');
 const assistantResult = require('./routes/assistant/result/result.js');
 const assistantCertificate = require('./routes/assistant/result/certificate.js');
+const assistantNotice = require('./routes/assistant/notice/notice.js');
 
-// 서버 기본 세팅
+// Server Env
 const app = express();
 app.use(express.static(path.join(__dirname, '/public'))); 
 app.set('views', './views');
@@ -50,6 +51,7 @@ app.use('/assistant/application', assistantApplication);
 app.use('/assistant/schedule', assistantSchedule);
 app.use('/assistant/result', assistantResult);
 app.use('/assistant/certificate', assistantCertificate);
+app.use('/assistant/notice', assistantNotice);
 
 
 

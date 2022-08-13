@@ -33,11 +33,16 @@
           <textarea class="form-control" id="denial-text" placeholder="거부 사유를 여기에 작성해 주세요."></textarea>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary">입력</button>
+          <button type="button" class="btn btn-primary" id="failSubmit" data-bs-dismiss="modal">입력</button>
           <button type="button" class="btn btn-danger" data-bs-dismiss="modal">취소</button>
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- bootstrap5 Alert -->
+  <div class="alert alert-success d-none" id="alert_box">
+    <strong id="alert_mention"></strong>
   </div>
 
   <!-- Main -->
@@ -71,7 +76,7 @@
             <% data.forEach(function(paper) { %>
             <tr>
               <td>
-                <input class="form-check-input" type="checkbox" value="">
+                <input class="form-check-input" type="checkbox" value="<%= paper.id %>" name="check-input">
               </td>
               <td onclick="location.href='/assistant/application/detail?id=<%= paper.id %>'">
                 <%= paper.timestamp %>
@@ -166,10 +171,10 @@
           return;
         } else {
           const myModal = new bootstrap.Modal(document.getElementById('denialModal'), {
-
             backdrop: false
           });
           myModal.show();
+          return ;
         }
       })
     }
@@ -183,16 +188,19 @@
     const btnPass = document.querySelector("#btnPass");
     const btnFail = document.querySelector("#btnFail");
 
-    function PutResetPass() {
+    const failReason = document.querySelector('#denial-text');
+    const failConfirm = document.querySelector('#failSubmit');
+
+    function PutApplicationPass() {
       const selected_length = document.getElementsByName("check-input").length;
       const array = new Array();
 
       for (let i = 0; i < selected_length; i++) {
-        if (document.getElementsByName("check-input")[i].checked == true) {
+        if (document.getElementsByName("check-input")[i].checked === true) {
           array.push(document.getElementsByName("check-input")[i].value)
         }
       }
-      fetch('/assistant/result', {
+      fetch('/assistant/application', {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json'
@@ -226,7 +234,7 @@
         })
     }
 
-    function PutResetFail() {
+    function PutApplicationFail() {
       const selected_length = document.getElementsByName("check-input").length;
       const array = new Array();
 
@@ -235,14 +243,15 @@
           array.push(document.getElementsByName("check-input")[i].value)
         }
       }
-      fetch('/assistant/result', {
+      fetch('/assistant/application', {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json'
           },
           body: JSON.stringify({
             isPass: false,
-            data: array
+            data: array,
+            reason: failReason.value
           })
         })
         .then((response) => {
@@ -269,8 +278,9 @@
         })
     }
 
-    btnPass.addEventListener('click', PutResetPass);
+    btnPass.addEventListener('click', PutApplicationPass);
     btnFail.addEventListener('click', countCheck);
+    failConfirm.addEventListener('click', PutApplicationFail);
   </script>
 
 </body>

@@ -1,0 +1,100 @@
+<% const dir=process.cwd() %>
+<!DOCTYPE html>
+<html lang="ko">
+<%- include(dir + '/src/views/common/head' ) %>
+<!-- Include CKEditor5 -->
+<head>
+  <script src="/javascripts/ckeditor.js"></script>
+  <style>
+    .ck-editor__editable{
+      min-height: 100px;
+    }
+  </style>
+</head>
+
+<body>
+  <%- include(dir + '/src/views/common/navbar-admin' ) %>
+  <div class="alert alert-danger d-none" id="alert_box">
+    <strong id="alert_mention"></strong>
+  </div>
+  <div class="container-sm mt-3">
+    <div class="title">
+      <div class="mt-1 mb-3">
+        <span class="badge bg-info fs-6 fw-bold">
+          공지사항 게시글 작성
+        </span>
+      </div>
+      <div class="d-grid">
+        <div class="form-group">
+          <input type="text" class="form-control" id="InputTitle" placeholder="제목을 입력해 주세요." maxlength="25">
+        </div>
+      </div>
+    </div>
+    <div class="content-container mt-2 ">
+      <div class="content shadow-sm">
+      </div>
+      <div class="d-flex justify-content-end mt-3">
+        <button type="button" class="btn btn-primary" id="postNotice">게시글 등록</button>
+      </div>
+    </div>
+
+  </div>
+  <%- include(dir + '/src/views/common/footer' ) %>
+  <script>
+    let editor;
+    ClassicEditor
+        .create( document.querySelector( '.content' ), {
+          placeholder: '내용을 입력하세요. '
+        } )
+        .then( newEditor => {
+          editor = newEditor;
+        })
+        .catch( error => {
+            console.error( error );
+        } );
+
+    const PostNoticeForm = (req, res) => {
+      const title = document.querySelector('#InputTitle').value;
+      const content = editor.getData();
+      const timestamp = new Date().toISOString().slice(0, 19).replace('T', ' ');
+
+      const box = document.querySelector('#alert_box');
+      const mention = document.querySelector('#alert_mention');
+
+      fetch('/assistant/notice/form', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            title: title,
+            content: content,
+            timestamp: timestamp
+          })
+        })
+        .then((response) => {
+          if (response.ok) {
+            box.classList.add('d-none');
+            return response.json();
+          }
+          return Promise.reject()
+        })
+        .then((data) => {
+          if (data.success == true) {
+            return location.href = "/assistant/notice";
+          } else {
+            mention.textContent = '게시글 저장에 실패하였습니다.';
+            box.classList.remove('d-none');
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        })
+    }
+
+    const btn = document.querySelector('#postNotice');
+    btn.addEventListener('click', PostNoticeForm);
+  </script>
+</body>
+
+</html>
