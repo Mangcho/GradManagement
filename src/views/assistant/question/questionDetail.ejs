@@ -5,15 +5,14 @@
 
 <head>
   <script src="/javascripts/ckeditor.js"></script>
-  <style>
-    .ck-editor__editable {
-      min-height: 100px;
-    }
-  </style>
+
 </head>
 
 <body>
   <%- include(dir + '/src/views/common/navbar-admin' ) %>
+  <div class="alert alert-danger d-none" id="alert_box">
+    <strong id="alert_mention"></strong>
+  </div>
   <div class="container-sm mt-3">
     <div class="title">
       <div class="mt-1 mb-3">
@@ -23,26 +22,60 @@
       </div>
       <div class="border-bottom rounded-3 p-1 shadow-sm" style="background-color: rgba(0,0,0,0.01);">
         <div class="fs-3 ms-2">
-          <% if(result.secret){%>
+          <% if(post.secret){%>
           <i class="bi bi-lock-fill"></i>
           <% } %>
-          <strong><%= result.title %> </strong>
+          <strong><%= post.title %> </strong>
         </div>
         <div class="mt-4 mb-2">
-          <% if(result.state == 0){%>
+          <% if(post.state == 0){%>
           <span class="fs-6 fw-bold me-5 ms-2"><i class="bi bi-mortarboard-fill"></i> 컴퓨터공학과 조교</span>
-          <% }else if(result.state == 1){ %>
-          <span class="fs-6 fw-bold me-5 ms-2"><i class="bi bi-person-fill"></i> <%= result.name %></span>
+          <% }else if(post.state == 1){ %>
+          <span class="fs-6 fw-bold me-5 ms-2"><i class="bi bi-person-fill"></i> <%= post.name %></span>
           <% }else{ %>
-          <span class="fs-6 fw-bold me-5 ms-2">계정 정지 상태 : <%= result.name %></span>
+          <span class="fs-6 fw-bold me-5 ms-2">계정 정지 상태 : <%= post.name %></span>
           <% } %>
           <span class="me-1">작성시각 : </span>
-          <span><%= result.timestamp %> </span>
+          <span><%= post.timestamp %> </span>
         </div>
       </div>
     </div>
     <div class="content-container mt-1">
       <div class="content mt-2">
+      </div>
+      <div class="comments-container mt-3 p-1">
+        <div class="comments-title text-start mb-1">
+          <span class="fs-5">댓글</span>
+        </div>
+        <div class="comment-editor-container mb-4">
+          <div class="comment-editor"></div>
+          <div class="d-flex justify-content-end mt-2">
+            <button type="button" class="btn btn-primary" id="postComment">댓글 작성</button>
+          </div>
+        </div>
+
+        <% if(comments.length == 0){%>
+
+        <% }else{ %>
+        <% comments.forEach(function(comment) { %>
+        <div class="comment mt-1 bg-light rounded-3 border border-white">
+          <div class="comment-head my-2 ms-2 position-relative">
+            <% if(comment.state == 0){%>
+            <i class="bi bi-mortarboard-fill"></i> <span class="fw-bold">컴퓨터공학과 조교</span>
+            <% }else if(comment.state == 1){ %>
+            <i class="bi bi-person-fill"></i> <span class="fw-bold"><%= comment.name %></span>
+            <% }else{ %>
+            계정 정지 상태 : <%= comment.name %>
+            <% } %>
+            <span class="position-absolute top-0 end-0 me-2">작성시각 : <%= comment.timestamp %></span>
+          </div>
+          <div class="comment-viewer mb-3 ms-4">
+            <%- comment.content.slice(1, -1) %>
+          </div>
+        </div>
+        <% }) %>
+        <% } %>
+
       </div>
     </div>
   </div>
@@ -50,10 +83,10 @@
 
   <script>
     // EJS content DATA
-    const raw = '<%- result.content %>';
-    const content = raw.slice(1, -1);
+    const rawPost = '<%- post.content %>';
+    const postContent = rawPost.slice(1, -1);
 
-    // Add CKEditor 5
+    // Add CKEditor 5 Viewer
     ClassicEditor
       .create(document.querySelector('.content'))
       .then(newEditor => {
@@ -61,11 +94,67 @@
         toolbarElement.style.display = 'none';
         newEditor.ui.view.editable.element.style.height = '500px';
         newEditor.enableReadOnlyMode('unique_key');
-        newEditor.setData(content);
+        newEditor.setData(postContent);
       })
       .catch(error => {
         console.error(error);
       });
+
+    // Add CKEditor 5 Comment
+    let commentEditor;
+
+    ClassicEditor
+      .create(document.querySelector('.comment-editor'))
+      .then(newEditor => {
+        commentEditor = newEditor;
+        const toolbarElement = commentEditor.ui.view.toolbar.element;
+        toolbarElement.style.display = 'none';
+      })
+      .catch(error => {
+        console.error(error);
+      });
+
+    const PostComment = () => {
+      const content = commentEditor.getData();
+      const timestamp = new Date().toISOString().slice(0, 19).replace('T', ' ');
+      const box = document.querySelector('#alert_box');
+      const mention = document.querySelector('#alert_mention');
+
+      if (content == '') {
+        return;
+      }
+
+      fetch('/assistant/question/detail/' + location.search, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            content: content,
+            timestamp: timestamp
+          })
+        })
+        .then((response) => {
+          if (response.ok) {
+            box.classList.add('d-none');
+            return response.json();
+          }
+          return Promise.reject()
+        })
+        .then((data) => {
+          if (data.success == true) {
+            return location.replace(location.href);
+          } else {
+            mention.textContent = '댓글 저장에 실패하였습니다.';
+            box.classList.remove('d-none');
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        })
+    }
+    const btn = document.querySelector('#postComment');
+    btn.addEventListener('click', PostComment);
   </script>
 </body>
 
