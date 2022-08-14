@@ -15,7 +15,13 @@ const db = mysql.createConnection({
 });
 
 const GetLogin = (req, res) => {
-    res.render(__dirname + '/../../views/common/login.ejs', {success : true});
+    if(String(req.headers["user-agent"]).search("rv:11.0") > -1|| String(req.headers["user-agent"]).search("MSIE") > -1){
+        res.render(__dirname + '/../../views/common/ie.ejs');
+    }
+    else {
+        res.render(__dirname + '/../../views/common/login.ejs', {success : true});
+    }
+    
 }
 
 const GetHash = (data) => {

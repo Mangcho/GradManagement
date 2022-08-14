@@ -1,0 +1,73 @@
+<% const dir=process.cwd() %>
+<!DOCTYPE html>
+<html lang="ko">
+<%- include(dir + '/src/views/common/head' ) %>
+
+<body>
+  <%- include(dir + '/src/views/common/navbar-admin' ) %>
+  <div class="alert alert-danger d-none" id="alert_box">
+    <strong id="alert_mention"></strong>
+  </div>
+  <!-- Main -->
+  <div class="container-sm">
+    <div class="row row-cols-1">
+      <div class="col mt-3 text-center border border-info border-2">
+        <span class="d-flex justify-content-center fs-1 fw-bold">학과내규 조회 및 업로드</span>
+      </div>
+      <div class="col text-center border border-info border-2">
+        <div class="d-grid mt-3">
+          <button class="btn btn-lg btn-primary" type="button" onclick="location.href ='/templates/policy/graduationPolicy.pdf'">클릭시 학과내규로 이동</button>
+        </div>
+
+        <p>
+          안녕하세요 계정 추가시 유의사항입니다.
+          <br>
+          1. <br>
+          2. <br>
+          3. <br>
+          입니다. 참고하시어 사용부탁드립니다.
+        </p>
+      </div>
+      <div class="col text-center border border-info border-2">
+        <!-- Upload File -->
+        <div class="form-group d-flex justify-content-center my-3">
+          <form action="/assistant/policy" enctype="multipart/form-data" method="POST">
+            <input class="form-control d-none" type="file" accept=".pdf" id="realUpload" name="graduationPolicy" >
+            <button type="submit" class="d-none" id="realSubmit">제출</button>
+          </form>
+          <button class="btn btn-primary" type="button" id="fakeUpload">파일 선택</button>
+          <input type="text" class="form-control w-50" placeholder="선택된 파일 없음" id="fakeLabel" disabled>
+        </div>
+        <div class="d-grid gap-2">
+          <button class="btn btn-lg btn-primary" type="button" id="fakeSubmit">파일 업로드</button>
+          <button class="btn btn-lg btn-primary mb-3" type="button" onclick="location.href='/assistant'">메인 화면 이동</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <%- include(dir + '/src/views/common/footer' ) %>
+  <script>
+    // Upload
+    const upload = document.querySelector("#fakeUpload");
+    const label = document.querySelector("#fakeLabel");
+    const real = document.querySelector("#realUpload");
+
+    const filenameChecker = () => {
+      if (real.files.length === 0) {} else {
+        console.log(real.files[0].value);
+        label.placeholder = real.files[0].name;
+      }
+    }
+
+    upload.addEventListener('click', () => real.click());
+    real.addEventListener('input', filenameChecker);
+
+    // PUT Form
+    const realBtn = document.querySelector("#realSubmit");
+    const fakeBtn = document.querySelector("#fakeSubmit");
+
+    fakeBtn.addEventListener('click', () => realBtn.click());
+  </script>
+</body>
+
+</html>

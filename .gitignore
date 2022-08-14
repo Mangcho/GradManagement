@@ -1,11 +1,10 @@
 /src/public/templates
 favicon.ico
 
-
-
 ### Node ###
 # Logs
 *.txt
+!robots.txt
 logs
 *.log
 npm-debug.log*

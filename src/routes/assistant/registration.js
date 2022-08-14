@@ -53,16 +53,16 @@ const GetHash = (data) => {
 const GetRegistration = (req, res) => {
     fs.readdir('src/public/templates/input', (err, files) => {
         if (err) throw err;
-      
+
         for (const file of files) {
             try {
-                fs.unlinkSync('src/public/templates/input/'+ file);
+                fs.unlinkSync('src/public/templates/input/' + file);
             }
-            catch(error){
+            catch (error) {
                 console.error(error)
             }
         }
-      });
+    });
     return res.render(__dirname + '/../../views/assistant/auth/registration.ejs');
 }
 
@@ -87,7 +87,7 @@ const PostRegistration = (req, res) => {
                     let count = 1;
                     let finish = 0;
 
-                    finish=worksheet.actualRowCount;
+                    finish = worksheet.actualRowCount;
 
                     worksheet.eachRow(function (row, rowNumber) {
                         let lineData = new Array;
@@ -105,22 +105,22 @@ const PostRegistration = (req, res) => {
                             if (String(lineData[0]).search(idChecker) > -1) {
                                 const encyPW = GetHash(String(lineData[0]));
                                 const sql = "INSERT INTO STUDENT VALUE('" + lineData[0] + "', '" + lineData[1] + "', '" + encyPW + "', 1 , '" + lineData[2] + "', '" + lineData[3] + "');";
-                                
-                               db.promise().execute(sql)
+
+                                db.promise().execute(sql)
                                     .then(([rows, fields]) => {
-                                        
+
                                         if (rows.affectedRows == 1) {
                                             lineData.push(true);
                                             results.push(lineData.slice());
                                             count++;
-                                            if(count == finish) {
+                                            if (count == finish) {
                                                 return res.render(__dirname + '/../../views/assistant/auth/resultRegistration.ejs', { sucess: true, results: results });
                                             }
                                         }
                                         else {
                                             results.push(lineData.slice());
                                             count++;
-                                            if(count == finish) {
+                                            if (count == finish) {
                                                 return res.render(__dirname + '/../../views/assistant/auth/resultRegistration.ejs', { sucess: true, results: results });
                                             }
                                         }
@@ -132,18 +132,18 @@ const PostRegistration = (req, res) => {
                                         lineData.push(error.sqlMessage.slice());
                                         results.push(lineData.slice());
                                         count++;
-                                        if(count == finish) {
+                                        if (count == finish) {
                                             return res.render(__dirname + '/../../views/assistant/auth/resultRegistration.ejs', { sucess: true, results: results });
                                         }
                                     })
-                            } 
+                            }
                             else {
                                 lineData.push(false);
                                 lineData.push('ID is Wrong');
                                 results.push(lineData.slice());
                                 count++;
-                                if(count == finish) {
-                                    return res.render(__dirname + '/../../views/assistant/auth/resultRegistration.ejs', { sucess: true, 'results': results});
+                                if (count == finish) {
+                                    return res.render(__dirname + '/../../views/assistant/auth/resultRegistration.ejs', { sucess: true, 'results': results });
                                 }
                             }
                         }
