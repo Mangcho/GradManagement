@@ -77,6 +77,9 @@ const GetNoticeForm = (req, res) => {
 
 const PostNoticeForm = (req, res) => {
     const {title, content, timestamp} = req.body;
+    if(title == ''){
+        return res.send({ success : false });
+    }
     const sql = "INSERT INTO NOTICE VALUES(NULL, '" + title + "', '" + timestamp + "', '" + JSON.stringify(content) + "');";
     db.query(sql, function (error, results) {
         if (error) { // 애러 핸들링

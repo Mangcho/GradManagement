@@ -17,16 +17,25 @@
   <div class="container-sm mt-3">
     <div class="title">
       <div class="mt-1 mb-3">
-        <span class="badge bg-info fs-6 fw-bold">
-          공지사항
+        <span class="badge bg-primary fs-6 fw-bold">
+          건의/질문
         </span>
       </div>
       <div class="border-bottom rounded-3 p-1 shadow-sm" style="background-color: rgba(0,0,0,0.01);">
         <div class="fs-3 ms-2">
+          <% if(result.secret){%>
+          <i class="bi bi-lock-fill"></i>
+          <% } %>
           <strong><%= result.title %> </strong>
         </div>
         <div class="mt-4 mb-2">
+          <% if(result.state == 0){%>
           <span class="fs-6 fw-bold me-5 ms-2"><i class="bi bi-mortarboard-fill"></i> 컴퓨터공학과 조교</span>
+          <% }else if(result.state == 1){ %>
+          <span class="fs-6 fw-bold me-5 ms-2"><i class="bi bi-person-fill"></i> <%= result.name %></span>
+          <% }else{ %>
+          <span class="fs-6 fw-bold me-5 ms-2">계정 정지 상태 : <%= result.name %></span>
+          <% } %>
           <span class="me-1">작성시각 : </span>
           <span><%= result.timestamp %> </span>
         </div>

@@ -48,19 +48,20 @@ const PostLogin = (req, res) => {
             if(results[0].state === 0){ //admin일 경우
                 req.session.auth = 99;
                 req.session.state = results[0].state;
+                req.session.userId = results[0].id;
                 return res.send({success:true, state:results[0].state});
             }
             else if(results[0].state === 1){
                 req.session.auth = 99;
                 req.session.state = results[0].state;
+                req.session.userId = results[0].id;
                 return res.send({success:true, state:results[0].state});
             }
             else {
                 return res.send({state:results[0].state});
             }
         }
-        }
-      );
+        });
 }
 
 router.get('/', GetLogin);

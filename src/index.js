@@ -16,6 +16,7 @@ const assistantSchedule = require('./routes/assistant/application/schedule.js');
 const assistantResult = require('./routes/assistant/result/result.js');
 const assistantCertificate = require('./routes/assistant/result/certificate.js');
 const assistantNotice = require('./routes/assistant/notice/notice.js');
+const assistantQuestion = require('./routes/assistant/question/question.js');
 
 // Server Env
 const app = express();
@@ -34,7 +35,7 @@ app.use(session({
 
 
 // Routing
-
+// Routing For All
 app.use('/auth/login', login);
 app.use('/auth/logout', logout);
 app.use(function(req, res, next){
@@ -44,6 +45,8 @@ app.use(function(req, res, next){
   }
   next();
 })
+
+// Routing For Assistant
 app.use('/assistant', assistant);
 app.use('/assistant/auth', assistantAuth);
 app.use('/assistant/auth/registration', assistantRegist);
@@ -52,10 +55,13 @@ app.use('/assistant/schedule', assistantSchedule);
 app.use('/assistant/result', assistantResult);
 app.use('/assistant/certificate', assistantCertificate);
 app.use('/assistant/notice', assistantNotice);
+app.use('/assistant/question', assistantQuestion);
+
+// Routing For Student
 
 
-
-app.use('/', function(req, res){ // auth된 상태라면 가야 할 곳으로 보내주자
+// Error Checking?
+app.use('/', function(req, res){ 
   if(req.session.auth === 99){
     console.log("original URL ROUTING : " + req.originalUrl);
     return res.send("something wrong");
@@ -66,16 +72,11 @@ app.use('/', function(req, res){ // auth된 상태라면 가야 할 곳으로 �
 
 })
 
-
-
-
-
 app.listen(process.env.PORT, () => {
     console.log('Internal Server IP: '+ process.env.INTERNAL_IP + process.env.PORT);
     console.log('External Server IP: '+ process.env.EXTERNAL_IP + process.env.PORT);
     console.log("=================== LOG ====================");
 });
-
 
 
 /*

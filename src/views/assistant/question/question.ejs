@@ -14,7 +14,7 @@
   <div class="container-sm">
     <div class="row row-cols-1">
       <div class="col mt-3 text-center">
-        <span class="d-flex justify-content-center fs-1 fw-bold"> 공지사항 </span>
+        <span class="d-flex justify-content-center fs-1 fw-bold">건의/질문</span>
         <div class="mt-1 mb-3 d-flex justify-content-center">
           <div class="w-25 border border-dark shadow-sm"></div>
         </div>
@@ -32,28 +32,41 @@
               </th>
               <th scope="col" class="fs-5 fw-bold">번호</th>
               <th scope="col" class="fs-5 fw-bold">제목</th>
+              <th scope="col" class="fs-5 fw-bold">작성자</th>
               <th scope="col" class="fs-5 fw-bold">작성일</th>
             </tr>
           </thead>
           <tbody>
             <% if(results===null || results.length===0){ %>
             <tr class="">
-              <td colspan="4" class="fs-3 text-muted">조회된 내역이 없습니다!</td>
+              <td colspan="5" class="fs-3 text-muted">조회된 내역이 없습니다!</td>
             </tr>
             <% } %>
-            <% results.forEach(function(notice) { %>
+            <% results.forEach(function(question) { %>
             <tr>
               <td>
-                <input class="form-check-input" type="checkbox" value="<%= notice.id %>" name="check-input">
+                <input class="form-check-input" type="checkbox" value="<%= question.id %>" name="check-input">
               </td>
-              <td onclick="location.href='/assistant/notice/detail?id=<%= notice.id %>'">
-                <%= notice.id %>
+              <td onclick="location.href='/assistant/question/detail?id=<%= question.id %>'">
+                <%= question.id %>
               </td>
-              <td onclick="location.href='/assistant/notice/detail?id=<%= notice.id %>'">
-                <%= notice.title %>
+              <td onclick="location.href='/assistant/question/detail?id=<%= question.id %>'">
+                <% if(question.secret){%>
+                <i class="bi bi-lock-fill"></i>
+                <% } %>
+                <%= question.title %>
               </td>
-              <td onclick="location.href='/assistant/notice/detail?id=<%= notice.id %>'">
-                <% const date = notice.timestamp.split(' '); %>
+              <td>
+                <% if(question.state == 0){%>
+                <i class="bi bi-mortarboard-fill"></i> 컴퓨터공학과 조교
+                <% }else if(question.state == 1){ %>
+                <i class="bi bi-person-fill"></i> <%= question.name %>
+                <% }else{ %>
+                  <i class="bi bi-exclamation-circle-fill"></i> <%= question.name %>
+                <% } %>
+              </td>
+              <td onclick="location.href='/assistant/question/detail?id=<%= question.id %>'">
+                <% const date = question.timestamp.split(' '); %>
                 <%= date[0] %>
               </td>
             </tr>
@@ -63,7 +76,7 @@
 
         <div>
           <div class="d-flex justify-content-end">
-            <button type="button" class="btn btn-primary me-4" onclick="location.href='/assistant/notice/form'">글작성</button>
+            <button type="button" class="btn btn-primary me-4" onclick="location.href='/assistant/question/form'">글작성</button>
             <button type="button" class="btn btn-primary" id="delete">선택 삭제</button>
           </div>
           <!--Pagination Variables-->
@@ -73,12 +86,12 @@
             <div class="center-block">
               <ul class="pagination">
                 <li class="page-item <%= previousBtnChecker?'':'disabled' %> ">
-                  <a class="page-link" href="/assistant/notice?page=<%= currentPage-1 %>" <%= previousBtnChecker?'':'tabindex="-1"' %>><i class="bi bi-chevron-left"></i></a>
+                  <a class="page-link" href="/assistant/question?page=<%= currentPage-1 %>" <%= previousBtnChecker?'':'tabindex="-1"' %>><i class="bi bi-chevron-left"></i></a>
                 </li>
                 <% for(i=1; i<=maxPage ; i++){ %>
                 <% if(i==1 || i==maxPage || (i>=currentPage-offset && i<=currentPage+offset)){ %>
                 <li class="page-item <%= currentPage==i?' active':''%>">
-                  <a class="page-link" href="/assistant/notice?page=<%= i %>">
+                  <a class="page-link" href="/assistant/question?page=<%= i %>">
                     <%= i %>
                   </a>
                 </li>
@@ -89,7 +102,7 @@
                 <% } %>
                 <% } %>
                 <li class="page-item <%= nextBtnChecker?'':'disabled' %>">
-                  <a class="page-link" href="/assistant/notice?page=<%= currentPage+1 %>" <%= previousBtnChecker?'':'tabindex="-1"' %>><i class="bi bi-chevron-right"></i></a>
+                  <a class="page-link" href="/assistant/question?page=<%= currentPage+1 %>" <%= previousBtnChecker?'':'tabindex="-1"' %>><i class="bi bi-chevron-right"></i></a>
                 </li>
               </ul>
             </div>
@@ -112,7 +125,7 @@
     const GetSearch = () => {
       const inputTitle = document.querySelector("#searchInput").value;
       if (inputTitle) {
-        return location.href = "/assistant/notice?search=" + inputTitle;
+        return location.href = "/assistant/question?search=" + inputTitle;
       } else {
         return;
       }
@@ -137,7 +150,7 @@
         return
       }
 
-      fetch('/assistant/notice', {
+      fetch('/assistant/question', {
           method: 'DELETE',
           headers: {
             'Content-Type': 'application/json'
@@ -147,10 +160,10 @@
           })
         })
         .then((response) => {
-          if (response.ok){
+          if (response.ok) {
             box.classList.add('d-none');
             return response.json()
-          } 
+          }
           return Promise.reject(rejectResponse)
         })
         .then((data) => {
