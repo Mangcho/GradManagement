@@ -6,9 +6,12 @@ const session = require('express-session');
 const favicon = require('serve-favicon');
 
 // Routing Import
+// Common Import
 const logout = require('./routes/auth/logout.js');
 const login = require('./routes/auth/login.js');
-const assistant = require('./routes/assistant/index.js');
+
+// Assistant Import
+const assistantMain = require('./routes/assistant/assistant.js');
 const assistantAuth = require('./routes/assistant/auth.js');
 const assistantRegist = require('./routes/assistant/registration.js');
 const assistantApplication = require('./routes/assistant/application/application.js');
@@ -17,6 +20,11 @@ const assistantResult = require('./routes/assistant/result/result.js');
 const assistantCertificate = require('./routes/assistant/result/certificate.js');
 const assistantNotice = require('./routes/assistant/notice/notice.js');
 const assistantQuestion = require('./routes/assistant/question/question.js');
+const assistantPolicy = require('./routes/assistant/policy/policy.js');
+
+// Student Import
+const studentMain = require('./routes/student/student.js');
+
 
 // Server Env
 const app = express();
@@ -47,7 +55,7 @@ app.use(function(req, res, next){
 })
 
 // Routing For Assistant
-app.use('/assistant', assistant);
+app.use('/assistant', assistantMain);
 app.use('/assistant/auth', assistantAuth);
 app.use('/assistant/auth/registration', assistantRegist);
 app.use('/assistant/application', assistantApplication);
@@ -56,9 +64,10 @@ app.use('/assistant/result', assistantResult);
 app.use('/assistant/certificate', assistantCertificate);
 app.use('/assistant/notice', assistantNotice);
 app.use('/assistant/question', assistantQuestion);
+app.use('/assistant/policy', assistantPolicy);
 
 // Routing For Student
-
+app.use('/student', studentMain);
 
 // Error Checking?
 app.use('/', function(req, res){ 
