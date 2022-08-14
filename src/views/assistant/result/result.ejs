@@ -5,8 +5,7 @@
 <body>
   <%- include(dir + '/src/views/common/navbar-admin' ) %>
   <% if(success=false) { %>
-  <% results[0].year='error' ; results[0].semester='error' ; results[0].start='2022/01/01' ;
-                        results[0].end='2022/01/01' ; success=false; }%>
+  <% results[0].year='error' ; results[0].semester='error' ; results[0].start='2022/01/01' ;results[0].end='2022/01/01' ; success=false; }%>
   <div class="alert alert-success d-none" id="alert_box">
     <strong id="alert_mention"></strong>
   </div>
@@ -218,7 +217,6 @@
 
     btnPass.addEventListener('click', PutResetPass);
     btnFail.addEventListener('click', PutResetFail);
-
   </script>
 </body>
 

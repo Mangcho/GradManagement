@@ -37,11 +37,12 @@ const upload = multer({
     storage: storage
 });
 
-const db = mysql.createConnection({
+const db = mysql.createPool({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PW,
-    database: process.env.DB_NAME
+    database: process.env.DB_NAME,
+    connectionLimit: process.env.DB_CONN_LIMIT
 });
 
 const GetHash = (data) => {

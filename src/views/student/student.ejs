@@ -5,24 +5,75 @@
 
 <body>
   <%- include(dir + '/src/views/common/navbar-student' ) %>
+  <!-- bootstrap5 Alert -->
+  <% if(success == false){%>
+  <div class="alert alert-danger" id="alert_box">
+    <strong id="alert_mention">DB에서 데이터를 가져오는데 실패했습니다.</strong>
+  </div>
+  <% } %>
+  <!-- Main -->
   <div class="container-sm">
     <div class="row row-cols-1">
-      <div class="col mt-4 p-3 text-center text-white border border-info border-2">
-        <h1>이곳은 졸업인증 일정이 들어갈 예정입니다.</h1>
+      <div class="col mt-4 text-center border ">
+        <% if(success == true && term == true){%>
+        <span class="fs-3 fw-bold"><%= schedule.year %>년도 <%= schedule.semester%>학기 </span> <br>
+        <span class="">졸업인증 심사신청기간<br></span>
+        <span class="fs-3"><%= schedule.start %> ~ <%= schedule.end %></span>
+        <% } else if(success == true && term == false) {%>
+        <span>지금은 졸업인증 심사신청기간이 아닙니다.</span>
+        <% } %>
       </div>
-      <div class="col mt-5 text-center text-white border border-info border-2">
-        <h3>현재학기 요약 인포그래픽</h3>
+    </div>
+    <!-- Main Text -->
+    <div class="row mt-5 text-center border border-info border-2">
+      <p>22년도 2학기 졸업인증 기록관리 페이지 시범운영중입니다.
+        사용중 버그가 확인되시면 @로 자세한 정황을 작성하여 전송 부탁드립니다. 감사합니다.
+      </p>
+    </div>
+    <!-- Mini Notice -->
+    <div class="row notice-viewer border mt-3">
+      <!-- 나중에 href 추가 -->
+      <div class="notice-header text-center bg-light">
+        <span class="fs-5">공지사항</span>
       </div>
-      <div class="p-3 text-center text-white border border-info border-2">
-        <div class="form-group">
-          <h1>이곳에는 인포그래픽이 들어갑니다.</h1>
-          <canvas id="myChart" width="20" height="20"></canvas>
-        </div>
-      </div>
-
+      <table class="notice-content mt-2 table table-striped table-hover text-center table-sm">
+        <thead>
+          <tr class="table-primary ">
+            <th scope="col" class="fw-bold">번호</th>
+            <th scope="col" class="fw-bold">제목</th>
+            <th scope="col" class="fw-bold">작성일</th>
+          </tr>
+        </thead>
+        <tbody>
+          <% if(noticeList===null || noticeList.length===0){ %>
+          <tr class="">
+            <td colspan="3" class="fs-5 text-muted">조회된 내역이 없습니다</td>
+          </tr>
+          <% } %>
+          <% noticeList.forEach(function(notice) { %>
+          <tr>
+            <td onclick="location.href='/student/notice/detail?id=<%= notice.id %>'">
+              <%= notice.id %>
+            </td>
+            <td onclick="location.href='/student/notice/detail?id=<%= notice.id %>'">
+              <%= notice.title %>
+            </td>
+            <td onclick="location.href='/student/notice/detail?id=<%= notice.id %>'">
+              <% const date = notice.timestamp.split(' '); %>
+              <%= date[0] %>
+            </td>
+          </tr>
+          <% }) %>
+        </tbody>
+      </table>
     </div>
   </div>
+  </div>
+  </div>
   <%- include(dir + '/src/views/common/footer' ) %>
+  <script>
+
+  </script>
 </body>
 
 </html>

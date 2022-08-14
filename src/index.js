@@ -25,6 +25,8 @@ const assistantPolicy = require('./routes/assistant/policy/policy.js');
 // Student Import
 const studentMain = require('./routes/student/student.js');
 
+const studentNotice = require('./routes/student/notice/notice.js');
+
 
 // Server Env
 const app = express();
@@ -68,6 +70,9 @@ app.use('/assistant/policy', assistantPolicy);
 
 // Routing For Student
 app.use('/student', studentMain);
+
+app.use('/student/notice', studentNotice);
+
 
 // Error Checking?
 app.use('/', function(req, res){ 
