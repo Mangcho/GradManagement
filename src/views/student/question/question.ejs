@@ -1,0 +1,116 @@
+<% const dir=process.cwd() %>
+<!DOCTYPE html>
+<html lang="ko">
+<%- include(dir + '/src/views/common/head' ) %>
+<body>
+  <%- include(dir + '/src/views/common/navbar-student' ) %>
+  <!-- Main -->
+  <div class="container-sm">
+    <div class="row row-cols-1">
+      <div class="col mt-3 text-center">
+        <span class="d-flex justify-content-center fs-1 fw-bold">건의/질문</span>
+        <div class="mt-1 mb-3 d-flex justify-content-center">
+          <div class="w-25 border border-dark shadow-sm"></div>
+        </div>
+      </div>
+      <div class="col border-bottom border-2 bg-light bg-gradient">
+        <div class="d-inline-flex my-2 float-end">
+          <input class="form-control me-sm-2" type="text" placeholder="제목을 입력하세요." id="searchInput">
+          <button class="btn btn-secondary my-2 my-sm-0" id="search">검색</button>
+        </div>
+        <table class="mt-2 table table-striped table-hover text-center">
+          <thead>
+            <tr class="table-primary">
+              <th scope="col" class="fs-5 fw-bold">번호</th>
+              <th scope="col" class="fs-5 fw-bold">제목</th>
+              <th scope="col" class="fs-5 fw-bold">작성자</th>
+              <th scope="col" class="fs-5 fw-bold">작성일</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if(results===null || results.length===0){ %>
+            <tr>
+              <td colspan="4" class="fs-3 text-muted">조회된 내역이 없습니다!</td>
+            </tr>
+            <% } %>
+            <% results.forEach(function(question) { %>
+            <tr onclick="location.href='/student/question/detail?id=<%= question.id %>'">
+              <td>
+                <%= question.id %>
+              </td>
+              <td>
+                <% if(question.secret){%>
+                <i class="bi bi-lock-fill"></i>
+                <% } %>
+                <%= question.title %>
+              </td>
+              <td>
+                <% if(question.state == 0){%>
+                <i class="bi bi-mortarboard-fill"></i> 컴퓨터공학과 조교
+                <% }else if(question.state == 1){ %>
+                <i class="bi bi-person-fill"></i> <%= question.name %>
+                <% }else{ %>
+                  <i class="bi bi-exclamation-circle-fill"></i> <%= question.name %>
+                <% } %>
+              </td>
+              <td>
+                <% const date = question.timestamp.split(' '); %>
+                <%= date[0] %>
+              </td>
+            </tr>
+            <% }) %>
+          </tbody>
+        </table>
+        <div>
+          <div class="d-flex justify-content-end">
+            <button type="button" class="btn btn-primary me-4" onclick="location.href='/student/question/form'">글작성</button>
+            <button type="button" class="btn btn-primary" id="delete">선택 삭제</button>
+          </div>
+          <!--Pagination Variables-->
+          <% const offset=2; let previousBtnChecker=currentPage>1; let nextBtnChecker = currentPage<maxPage; %>
+          <!--Pagination-->
+          <div class="d-flex justify-content-center mb-2">
+            <div class="center-block">
+              <ul class="pagination">
+                <li class="page-item <%= previousBtnChecker?'':'disabled' %> ">
+                  <a class="page-link" href="/student/question?page=<%= currentPage-1 %>" <%= previousBtnChecker?'':'tabindex="-1"' %>><i class="bi bi-chevron-left"></i></a>
+                </li>
+                <% for(i=1; i<=maxPage ; i++){ %>
+                <% if(i==1 || i==maxPage || (i>=currentPage-offset && i<=currentPage+offset)){ %>
+                <li class="page-item <%= currentPage==i?' active':''%>">
+                  <a class="page-link" href="/student/question?page=<%= i %>">
+                    <%= i %>
+                  </a>
+                </li>
+                <% } else if(i==2 || i==maxPage-1){ %>
+                <li>
+                  <a class="page-link">...</a>
+                </li>
+                <% } %>
+                <% } %>
+                <li class="page-item <%= nextBtnChecker?'':'disabled' %>">
+                  <a class="page-link" href="/student/question?page=<%= currentPage+1 %>" <%= previousBtnChecker?'':'tabindex="-1"' %>><i class="bi bi-chevron-right"></i></a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <%- include(dir + '/src/views/common/footer' ) %>
+  <script>
+    // Search Function
+    const GetSearch = () => {
+      const inputTitle = document.querySelector("#searchInput").value;
+      if (inputTitle) {
+        return location.href = "/student/question?search=" + inputTitle;
+      } else {
+        return;
+      }
+    }
+    const searchBtn = document.querySelector("#search");
+    searchBtn.addEventListener('click', GetSearch);
+  </script>
+</body>
+</html>

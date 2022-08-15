@@ -2,8 +2,8 @@
 <!DOCTYPE html>
 <html lang="ko">
 <%- include(dir + '/src/views/common/head' ) %>
-<!-- Include CKEditor5 -->
 
+<!-- Include CKEditor5 -->
 <head>
   <script src="/javascripts/ckeditor.js"></script>
   <style>
@@ -12,9 +12,8 @@
     }
   </style>
 </head>
-
 <body>
-  <%- include(dir + '/src/views/common/navbar-admin' ) %>
+  <%- include(dir + '/src/views/common/navbar-student' ) %>
   <div class="alert alert-danger d-none" id="alert_box">
     <strong id="alert_mention"></strong>
   </div>
@@ -45,6 +44,8 @@
   </div>
   <%- include(dir + '/src/views/common/footer' ) %>
   <script>
+    
+
     // CKEditor 5
     let editor;
     ClassicEditor
@@ -61,13 +62,14 @@
     const PostQuestionForm = (req, res) => {
       const title = document.querySelector('#InputTitle').value;
       const secret = document.querySelector('#privateSelecter');
+      const pw = document.querySelector('#privatePassword');
       const content = editor.getData();
       const timestamp = new Date().toISOString().slice(0, 19).replace('T', ' ');
 
       const box = document.querySelector('#alert_box');
       const mention = document.querySelector('#alert_mention');
 
-      fetch('/assistant/question/form', {
+      fetch('/student/question/form', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -88,7 +90,7 @@
         })
         .then((data) => {
           if (data.success == true) {
-            return location.href = "/assistant/question";
+            return location.href = "/student/question";
           } else {
             mention.textContent = '게시글 저장에 실패하였습니다.';
             box.classList.remove('d-none');
@@ -98,7 +100,6 @@
           console.error(error);
         })
     }
-
     const btn = document.querySelector('#postQuestion');
     btn.addEventListener('click', PostQuestionForm);
   </script>
