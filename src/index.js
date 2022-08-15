@@ -25,11 +25,10 @@ const assistantPolicy = require('./routes/assistant/policy/policy.js');
 // Student Import
 const studentMain = require('./routes/student/student.js');
 
-const studentCertificate = require('./routes/student/certificate/certificate.js')
-
+const studentCertificate = require('./routes/student/certificate/certificate.js');
+const studentPolicy = require('./routes/student/policy/policy.js')
 const studentNotice = require('./routes/student/notice/notice.js');
 const studentQuestion = require('./routes/student/question/question.js');
-
 const studentAuth = require('./routes/student/auth/auth.js');
 
 
@@ -77,7 +76,7 @@ app.use('/assistant/policy', assistantPolicy);
 app.use('/student', studentMain);
 
 app.use('/student/certificate', studentCertificate);
-
+app.use('/student/policy', studentPolicy);
 app.use('/student/notice', studentNotice);
 app.use('/student/question', studentQuestion);
 app.use('/student/auth', studentAuth);
