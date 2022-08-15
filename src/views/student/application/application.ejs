@@ -1,0 +1,305 @@
+<% const dir=process.cwd() %>
+<!DOCTYPE html>
+<html lang="ko">
+<%- include(dir + '/src/views/common/head' ) %>
+
+<body>
+  <%- include(dir + '/src/views/common/navbar-student' ) %>
+  <!-- bootstrap5 Alert -->
+  <div class="alert alert-success d-none" id="alert_box">
+    <strong id="alert_mention"></strong>
+  </div>
+  <div class="container-sm" onclick="checkContainer()">
+    <div class="row mt-3 text-center">
+      <span class="d-flex justify-content-center fs-1 fw-bold">졸업인증 심사신청</span>
+    </div>
+    <div class="row justify-content-center">
+      <div class="w-75 border-bottom border-dark"></div>
+    </div>
+    <!--Progress Bar -->
+    <div class="row mt-3">
+      <div class="col barContainer">
+        <div class="progress">
+          <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="1" aria-valuemin="1" aria-valuemax="100" style="width: 1%;"></div>
+        </div>
+      </div>
+    </div>
+    <!-- Category -->
+    <div class="row row-cols-2 categoryContainer mt-3">
+      <div class="col">
+        <div class="rounded p-1" style="background-color: rgba(0, 0, 0, 0.1);">
+          <input class="form-check-input ms-2" type="radio" name="optionsRadios" value="" id="flexCheckDefault" %>>
+          <span class="ms-2 fw-bold">졸업논문</span>
+        </div>
+      </div>
+      <div class="col">
+        <div class="rounded p-1" style="background-color: rgba(0, 0, 0, 0.1);">
+          <input class="form-check-input ms-2" type="radio" name="optionsRadios" value="" id="categoryDefault" %>>
+          <span class="ms-2 fw-bold">졸업작품</span>
+        </div>
+      </div>
+      <div class="col">
+        <div class="rounded p-1 mt-2" style="background-color: rgba(0, 0, 0, 0.1);">
+          <input class="form-check-input ms-2" type="radio" name="optionsRadios" value="" id="flexCheckDefault" %>>
+          <span class="ms-2 fw-bold">장기현장실습</span>
+        </div>
+      </div>
+      <div class="col">
+        <div class="rounded p-1 mt-2" style="background-color: rgba(0, 0, 0, 0.1);">
+          <input class="form-check-input ms-2" type="radio" name="optionsRadios" value="" id="flexCheckDefault" %>>
+          <span class="ms-2 fw-bold">학생창업</span>
+        </div>
+      </div>
+    </div>
+    <div class="row teammatesTitle mt-2">
+      <div class="col border border-dark mt-2 text-center">
+        <span class="fs-5">팀원 명단 입력</span>
+      </div>
+    </div>
+    <!-- Teammates -->
+    <div class="row row-cols-2 teammatesContent mt-2">
+      <div class="col form-group has-success mb-1">
+        <input type="text" placeholder="학번" class="form-control" id="inputFirstID" value="<%= myself.id %>" disabled>
+      </div>
+      <div class="col form-group has-success mb-1">
+        <input type="text" placeholder="이름" class="form-control" id="inputFirstName" value="<%= myself.name %>" disabled>
+      </div>
+      <div class="col form-group has-success mb-1">
+        <input type="text" placeholder="학번" class="form-control inputID" id="inputSecondID">
+        <div class="valid-feedback">올바른 양식입니다.</div>
+        <div class="invalid-feedback">학번은 9자리의 숫자로 구성해야 합니다.</div>
+      </div>
+      <div class="col form-group has-success mb-1">
+        <input type="text" placeholder="이름" class="form-control inputName" id="inputSecondName">
+        <div class="valid-feedback">올바른 양식입니다.</div>
+        <div class="invalid-feedback">이름은 한국어로만 구성해야 합니다.</div>
+      </div>
+      <div class="col form-group has-success mb-1">
+        <input type="text" placeholder="학번" class="form-control inputID" id="inputThirdID">
+        <div class="valid-feedback">올바른 양식입니다.</div>
+        <div class="invalid-feedback">학번은 9자리의 숫자로 구성해야 합니다.</div>
+      </div>
+      <div class="col form-group has-success mb-1">
+        <input type="text" placeholder="이름" class="form-control inputName" id="inputThirdName">
+        <div class="valid-feedback">올바른 양식입니다.</div>
+        <div class="invalid-feedback">이름은 한국어로만 구성해야 합니다.</div>
+      </div>
+      <div class="col form-group has-success mb-1">
+        <input type="text" placeholder="학번" class="form-control inputID" id="inputFourthID">
+        <div class="valid-feedback">올바른 양식입니다.</div>
+        <div class="invalid-feedback">학번은 9자리의 숫자로 구성해야 합니다.</div>
+      </div>
+      <div class="col form-group has-success mb-1">
+        <input type="text" placeholder="이름" class="form-control inputName" id="inputFourthName">
+        <div class="valid-feedback">올바른 양식입니다.</div>
+        <div class="invalid-feedback">이름은 한국어로만 구성해야 합니다.</div>
+      </div>
+    </div>
+    <div class="row uploadFileTitle mt-2">
+      <div class="col border border-dark mt-2 text-center">
+        <span class="fs-5">파일 업로드</span>
+      </div>
+    </div>
+    <!-- Upload File -->
+    <div class="row uploadFile">
+      <div class="col form-group d-flex justify-content-center mt-2 mb-3">
+        <form action="" enctype="multipart/form-data" method="POST">
+          <input class="form-control d-none" type="file" accept=".pdf" id="realUpload" name="applicationFile">
+          <button type="submit" class="d-none" id="realSubmit">제출</button>
+        </form>
+        <button class="btn btn-primary" type="button" id="fakeUpload">파일 선택</button>
+        <input type="text" class="form-control w-50" placeholder="선택된 파일 없음" id="fakeLabel" disabled>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col justify-content-evenly d-flex">
+        <button class="btn btn-lg w-50 btn-primary" type="button">제출</button>
+      </div>
+    </div>
+  </div>
+  <%- include(dir + '/src/views/common/footer' ) %>
+
+  <script>
+    // Logic For Validation at Client Side
+    const regIDChecker = /^[\d]{9}$/;
+    const regNameChecker = /[가-힣]$/;
+
+    const inputIDArr = document.querySelectorAll('.inputID');
+    const inputNameArr = document.querySelectorAll('.inputName');
+    const gradItem = document.querySelector('#categoryDefault');
+    const categorySelecter = document.querySelector('.categoryContainer');
+
+    let idCorrectCount = 0;
+    let nameCorrectCount = 0;
+
+    function disableAll() {
+      if (gradItem.checked == false) {
+        inputIDArr.forEach((obj) => {{
+        obj.disabled = true;
+    }})
+        inputNameArr.forEach((obj) => {{
+        obj.disabled = true;
+    }})
+      } else {
+        inputIDArr.forEach((obj) => {{
+        obj.disabled = false;
+    }})
+        inputNameArr.forEach((obj) => {{
+        obj.disabled = false;
+    }})
+      }
+
+    }
+    categorySelecter.addEventListener('click', disableAll);
+
+
+    function IDChecker(e) {
+      if (regIDChecker.test(e.target.value)) {
+        e.target.classList.remove('is-invalid');
+        e.target.classList.add('is-valid');
+        idCorrectCount++;
+      } else {
+        if (e.target.classList.contains('is-valid') && idCorrectCount > 0) {
+          idCorrectCount--;
+        }
+        e.target.classList.remove('is-valid');
+        e.target.classList.add('is-invalid');
+      }
+    }
+    inputIDArr.forEach((obj) => {{
+        obj.addEventListener('change', IDChecker);
+    }})
+
+    function nameChecker(e) {
+      if (e.target.value.search(regNameChecker) > -1) {
+        e.target.classList.remove('is-invalid');
+        e.target.classList.add('is-valid');
+        nameCorrectCount++;
+      } else {
+        if (e.target.classList.contains('is-valid') && nameCorrectCount > 0) {
+          nameCorrectCount--;
+        }
+        e.target.classList.remove('is-valid');
+        e.target.classList.add('is-invalid');
+
+      }
+    }
+    inputNameArr.forEach((obj) => {{
+        obj.addEventListener('change', nameChecker);
+    }})
+
+    //Upload
+    const upload = document.querySelector("#fakeUpload");
+    const label = document.querySelector("#fakeLabel");
+    const real = document.querySelector("#realUpload");
+
+    function filenameChecker() {
+      if (real.files.length === 0) {
+        label.placeholder = "선택된 파일 없음";
+      } else {
+        label.placeholder = real.files[0].name;
+      }
+    }
+
+    upload.addEventListener('click', () => real.click());
+    real.addEventListener('input', filenameChecker);
+
+    // Progress Bar
+    const progressBar = document.querySelector('.progress-bar');
+    const inputRadio = document.querySelectorAll('.form-check-input');
+    let radioState;
+
+    function isRadioChecked(e) {
+      if (e.target.checked) {
+        radioState = true;
+      } else {
+        radioState = false;
+      }
+    }
+    inputRadio.forEach((obj) => {{
+        obj.addEventListener('click', isRadioChecked);
+    }})
+
+    // Progress Bar Main
+    function checkContainer() {
+      if (gradItem.checked == true) {
+        if (!(radioState)) {
+          progressBar.ariaValueNow = 1;
+          progressBar.style.width = '1%';
+        } else if (radioState && idCorrectCount === 0 && nameCorrectCount === 0) {
+          progressBar.ariaValueNow = 25;
+          progressBar.style.width = '25%';
+        } else if (radioState && (idCorrectCount === 1 && nameCorrectCount === 1) || (idCorrectCount === 2 && nameCorrectCount === 1) || (idCorrectCount === 1 && nameCorrectCount === 2)) {
+          progressBar.ariaValueNow = 50;
+          progressBar.style.width = '50%';
+        } else if (radioState && idCorrectCount == 2 && nameCorrectCount == 2 && real.files.length == 0) {
+          progressBar.ariaValueNow = 75;
+          progressBar.style.width = '75%';
+        } else if (radioState && idCorrectCount == 2 && nameCorrectCount == 2 && real.files.length == 1) {
+          progressBar.ariaValueNow = 100;
+          progressBar.style.width = '100%';
+        }
+      } else {
+        if (!(radioState)) {
+          progressBar.ariaValueNow = 1;
+          progressBar.style.width = '1%';
+        } else if (radioState && real.files.length == 0)  {
+          progressBar.ariaValueNow = 50;
+          progressBar.style.width = '50%';
+        } else if (radioState && real.files.length == 1) {
+          progressBar.ariaValueNow = 100;
+          progressBar.style.width = '100%';
+        }
+      }
+
+
+    }
+
+    // FETCH
+    const box = document.querySelector('#alert_box');
+    const mention = document.querySelector('#alert_mention');
+
+    function PostApplication() {
+
+      fetch('/student/application', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            Input_phone: inputPhone,
+            Input_email: inputEmail,
+          })
+        })
+        .then((response) => {
+          if (response.ok) {
+            box.classList.add('d-none');
+            return response.json();
+          }
+          return Promise.reject(rejectResponse)
+        })
+        .then((data) => {
+          if (data.success == true) {
+            box.classList.remove('alert-danger');
+            box.classList.add('alert-success');
+            mention.textContent = '정상적으로 적용되었습니다.';
+          } else {
+            box.classList.remove('alert-success');
+            box.classList.add('alert-danger');
+            mention.textContent = '적용에 실패하였습니다.';
+          }
+          box.classList.remove('d-none');
+          setTimeout(() => {
+            location.reload(true);
+          }, 800);
+        })
+        .catch((error) => {
+          console.error(error);
+        })
+    }
+    const btn = document.querySelector("#save");
+    //btn.addEventListener('click', PutAuth);
+  </script>
+</body>
+
+</html>

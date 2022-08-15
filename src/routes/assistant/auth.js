@@ -4,11 +4,12 @@ const mysql = require('mysql2');
 
 const router = express.Router();
 
-const db = mysql.createConnection({
+const db = mysql.createPool({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PW,
     database: process.env.DB_NAME,
+    connectionLimit: process.env.DB_CONN_LIMIT,
     multipleStatements: true
 });
 
@@ -42,7 +43,7 @@ const GetAssistantAuth = (req, res) => {
     const sql1 = 'SELECT name, id, state FROM STUDENT;';
 
     db.query(sql1 + sql2, function (error, results) {
-        if (error) { // 애러 핸들링
+        if (error) {
             console.log("DB query error!");
             throw error;
         }
@@ -56,7 +57,7 @@ const GetAssistantAuth = (req, res) => {
 const GetStudentDetail = (req, res) => {
     const sql = 'SELECT name, id, state, phone_num, email FROM STUDENT WHERE id=' + req.query.id + ';';
     db.query(sql, function (error, results) {
-        if (error) { // 애러 핸들링
+        if (error) { 
             console.log("DB query error!");
             throw error;
         }
@@ -82,7 +83,7 @@ const PutStudentDetail = (req, res) => {
         + '", email = "' + Input_email + '", state = ' + state_Num + ' WHERE id = "' + Input_id + '"';
 
     db.query(sql, function (error, results) {
-        if (error) { // 애러 핸들링
+        if (error) { 
             console.log("DB query error!");
             throw error;
         }
@@ -105,7 +106,7 @@ const GetPasswordReset = (req, res) => {
 
 const PutPasswordReset = (req, res) => {
     const Input_ID = req.body.Input_ID;
-    const idChecker = /^[0-9]{9}/g;
+    const idChecker = /^[\d]{9}$/g;
     const cryPW = GetHash(String(Input_ID));
 
 
@@ -113,7 +114,7 @@ const PutPasswordReset = (req, res) => {
         const sql = "UPDATE STUDENT SET password ='"+ cryPW + "'WHERE id = '" + Input_ID + "';";
 
         db.query(sql, function (error, results) {
-            if (error) { // 애러 핸들링
+            if (error) { 
                 console.log("DB query error! : ", error);
                 return res.send({ success: false })
             }

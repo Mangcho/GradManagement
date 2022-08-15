@@ -67,32 +67,26 @@
 
     <!-- teammates -->
     <% if(paper.category == 1){ %>
-      <% if(teammates.second_id == undefined) {%>
-        <% teammates.second_id = '미입력'; teammates.second_name = ''; %>
-        <% } %>
-        <% if(teammates.third_id == undefined) {%>
-          <% teammates.third_id = '미입력'; teammates.third_name = ''; %>
-          <% } %>
-          <% if(teammates.fourth_id == undefined) {%>
-            <% teammates.fourth_id = '미입력'; teammates.fourth_name = ''; %>
-            <% } %>  
+     aaaa <%= teammates == null? 'ss' :'a'%> 
+     <!--
     <div class="row  align-items-center">
       <div class="col my-3">
         <span class="fs-3 float-start">팀원 명단</span>
       </div>
       <div class="col d-flex justify-content-around my-3">
-        <span class="border-top border-bottom border-dark w-100 text-center p-2" style="background-color: rgba(0, 0, 0, 0.1);"> <%= teammates.first_id %> <%= teammates.first_name %></span>
+        <span class="border-top border-bottom border-dark w-100 text-center p-2" style="background-color: rgba(0, 0, 0, 0.1);"> <%= //teammates.first_id %> <%= //teammates.first_name %></span>
       </div>
       <div class="col d-flex justify-content-around my-3">
-        <span class="border-top border-bottom border-dark w-100 text-center p-2" style="background-color: rgba(0, 0, 0, 0.1);"><%= teammates.second_id %> <%= teammates.second_name %></span>
+        <span class="border-top border-bottom border-dark w-100 text-center p-2" style="background-color: rgba(0, 0, 0, 0.1);"><%= //teammates.second_id %> <%= //teammates.second_name %></span>
       </div>
       <div class="col d-flex justify-content-around my-3">
-        <span class="border-top border-bottom border-dark w-100 text-center p-2" style="background-color: rgba(0, 0, 0, 0.1);"><%= teammates.third_id %> <%= teammates.third_name %></span>
+        <span class="border-top border-bottom border-dark w-100 text-center p-2" style="background-color: rgba(0, 0, 0, 0.1);"><%= //teammates.third_id %> <%= //teammates.third_name %></span>
       </div>
       <div class="col d-flex justify-content-around my-3">
-        <span class="border-top border-bottom border-dark w-100 text-center p-2" style="background-color: rgba(0, 0, 0, 0.1);"><%= teammates.fourth_id %> <%= teammates.fourth_name %></span>
+        <span class="border-top border-bottom border-dark w-100 text-center p-2" style="background-color: rgba(0, 0, 0, 0.1);"><%= //teammates.fourth_id %> <%= //teammates.fourth_name %></span>
       </div>
     </div>
+    -->
     <% }else{ %>
     <div class="row d-flex text-center p-2 mt-2" style="background-color: rgba(0, 0, 0, 0.15);">
       <span class="fs-3">팀원 해당없음</span>  
