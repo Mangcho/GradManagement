@@ -36,18 +36,15 @@
     const alert_box = document.querySelector("#loginAlert");
     const alert_text = document.querySelector("#alert-text");
 
-    alert_box.classList.add('d-none');
-
     const Postlogin = () => {
+      alert_box.classList.add('d-none');
 
       const inputID = document.querySelector("#InputID").value;
       const inputPW = document.querySelector("#InputPW").value;
 
       if (inputID == '' || inputPW == '') {
-        if (alert_box.classList.contains('d-none')) {
-          alert_box.classList.remove('d-none');
-        }
         document.querySelector("#alert-text").textContent = '아이디나 비밀번호를 입력하세요.';
+        alert_box.classList.remove('d-none');
         return false;
       }
 
@@ -63,8 +60,8 @@
           })
         })
         .then((response) => {
+          alert_box.classList.add('d-none');
           if (response.ok) {
-
             return response.json() // html 200 ~ 299
           }
           return Promise.reject(rejectResponse)

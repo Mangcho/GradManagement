@@ -1,0 +1,64 @@
+<% const dir=process.cwd() %>
+<!DOCTYPE html>
+<html lang="ko">
+<%- include(dir + '/src/views/common/head' ) %>
+
+<body>
+  <%- include(dir + '/src/views/common/navbar-student' ) %>
+  <!-- bootstrap5 Alert -->
+  <div class="alert alert-success d-none" id="alert_box">
+    <strong id="alert_mention"></strong>
+  </div>
+  <div class="container-sm">
+    <div class="row resultContainer justify-content-center">
+      <div class="col Result mt-5 w-75">
+        <% if( success == false && result == undefined){ %>
+        <div class="card text-white bg-danger mb-3">
+          <div class="card-header fs-4">졸업인증 정보 불러오기 실패</div>
+          <div class="card-body">
+            <p class="card-text">인터넷 상태를 점검하시거나, <br> 관리자에게 연락하시기 바랍니다.</p>
+          </div>
+        </div>
+        <% }else if(success == true && result == undefined){ %>
+        <!-- connection okay but no certificated -->
+        <div class="card mb-3">
+          <h3 class="card-header">졸업인증 미완료</h3>
+          <div class="card-body">
+            <span class="badge rounded-pill bg-danger">미인증</span>
+            <p class="card-text mt-1"><%= info.id  %> <%= info.name  %>님은 현재 인증내역이 없습니다.</p>
+          </div>
+          <div class="card-footer text-muted">
+          </div>
+        </div>
+        <% }else if(success == true && result != undefined){%>
+        <!-- certificated -->
+        <div class="card mb-3 ">
+          <h3 class="card-header fs-2">졸업인증 완료</h3>
+          <img src="/images/medal.png" class="d-block user-select-none my-3 w-50 mx-auto" alt="medal" onerror="this.onerror=null; this.src='http://via.placeholder.com/600.png?text=picture+is+not+available';">
+          <div class="card-body border-top">
+            <% if(result.category == 0){%>
+            <span class="badge rounded-pill bg-primary">졸업논문</span>
+            <% }else if(result.category == 1){ %>
+            <span class="badge rounded-pill bg-success">졸업작품</span>
+            <% }else if(result.category == 2){ %>
+            <span class="badge rounded-pill bg-warning">장기현장실습</span>
+            <% } else {%>
+            <span class="badge rounded-pill bg-info">학생창업</span>
+            <% } %>
+            <p class="card-text mt-1"><%= info.id  %> <%= info.name  %>님은 졸업인증이 완료되었습니다.</p>
+          </div>
+          <div class="card-footer text-muted">
+            <%= result.schedule_year %>년 <%= result.schedule_semester %>학기
+            <%= result.timestamp.slice(5,-9).replace('-','월 ') + '일' %>
+          </div>
+        </div>
+        <% } else {%>
+        <p>이 문자를 보셨다면 버그를 찾으신 겁니다.. 제보부탁드립니다.</p>
+        <% }%>
+      </div>
+    </div>
+  </div>
+  <%- include(dir + '/src/views/common/footer' ) %>
+</body>
+
+</html>
