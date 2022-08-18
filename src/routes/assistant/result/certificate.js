@@ -27,7 +27,7 @@ const GetCertificate = (req, res) => {
 
     
 
-    const sql = 'SELECT student_id, schedule_year, schedule_semester FROM RESULT WHERE approval = true;';
+    const sql = 'SELECT student_id FROM RESULT WHERE approval = true;';
     
 
     const sql2 = 'SELECT STUDENT.id, STUDENT.name, category, timestamp, approval, schedule_year, schedule_semester ' +

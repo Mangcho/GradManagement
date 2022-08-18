@@ -15,7 +15,6 @@ const db = mysql.createPool({
 
 const GetApplication = (req, res) => {
     const sql1 = 'SELECT * FROM SCHEDULE ORDER BY year DESC LIMIT 1';
-
     let page = req.body.page;
 
     if (req.query.page === undefined) {
@@ -50,46 +49,41 @@ const GetApplication = (req, res) => {
 
             return res.render(__dirname + '/../../../views/assistant/application/application.ejs', { success: true, results: results1, data: results2[1], currentPage: page, maxPage: maxPage });
         })
+    })
+}
 
-
+const PutApplication = (req, res) => {
+    const { isPass, data } = req.body;
+    let sql = '';
+    if (isPass == true) {
+        sql = 'UPDATE APPLICATION SET approval = CASE ' 
+        + 'WHEN ISNULL(approval) THEN true '
+        + 'ELSE approval END '
+        + 'WHERE student_id = "';
+        const a = data.join('" OR student_id = "');
+        sql = sql + a + '";';
+    } else {
+        sql = 'UPDATE APPLICATION SET approval = CASE ' 
+        + 'WHEN ISNULL(approval) THEN false '
+        + 'ELSE approval END '
+        + 'WHERE student_id = "';
+        const a = data.join('" OR student_id = "');
+        sql = sql + a + '";';
+    }
+    db.query(sql, function (error, results) {
+        if (error) { // 애러 핸들링
+            console.log("Application DB query error! : ", error);
+            return res.send({ success: false });
+        }
+        if(results.changedRows == 0){
+            return res.send({ success: false });
+        }
+        return res.send({ success: true });
     })
 }
 
 
-const PutApplication = (req, res) => {
-    if (req.body.isPass == true) {
-        const { isPass, data } = req.body;
-
-        let sql = 'UPDATE APPLICATION SET approval = true WHERE student_id = "';
-        const a = data.join('" OR student_id = "');
-        sql = sql + a + '";';
-
-        db.query(sql, function (error, results) {
-            if (error) { // 애러 핸들링
-                console.log("DB query error! : Application Detail ", error);
-                return res.send({ success: false });
-            }
-            return res.send({ success: true });
-        })
-    } else {
-        const { isPass, data, reason } = req.body;
-
-        let sql = 'UPDATE APPLICATION SET approval = false, reason = "'+ reason + '" WHERE student_id ="';
-        const a = data.join('" OR student_id = "');
-        sql = sql + a + '";';
-        db.query(sql, function (error, results) {
-            if (error) { // 애러 핸들링
-                console.log("DB query error! : Application Detail ", error);
-                return res.send({ success: false });
-            }
-            return res.send({ success: true });
-        })
-
-    }
-}
-
-
-GetApplicationDetail = (req, res) => {
+const GetApplicationDetail = (req, res) => {
     const sql = 'SELECT APPLICATION.id, student_id, STUDENT.name, category, teammates, file, timestamp, approval FROM APPLICATION ' +
         'LEFT JOIN STUDENT ON APPLICATION.student_id = STUDENT.id WHERE student_id="' + req.query.id + '";';
     db.query(sql, function (error, results) {

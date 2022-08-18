@@ -1,6 +1,7 @@
 <% const dir=process.cwd() %>
 <!DOCTYPE html>
 <%- include(dir + '/src/views/common/head' ) %>
+
 <body>
   <%- include(dir + '/src/views/common/navbar-admin' ) %>
   <div class="container-sm">
@@ -64,6 +65,34 @@
             </tr>
           </tbody>
         </table>
+        <!--Pagination Variables-->
+        <% const offset=2; let previousBtnChecker=currentPage>1; let nextBtnChecker = currentPage<maxPage; %>
+        <!--Pagination-->
+        <div class="d-flex justify-content-center">
+          <div class="center-block">
+            <ul class="pagination">
+              <li class="page-item <%= previousBtnChecker?'':'disabled' %> ">
+                <a class="page-link" href="/assistant/certificate?page=<%= currentPage-1 %>" <%= previousBtnChecker?'':'tabindex="-1"' %>>&laquo;</a>
+              </li>
+              <% for(i=1; i<=maxPage ; i++){ %>
+              <% if(i==1 || i==maxPage || (i>=currentPage-offset && i<=currentPage+offset)){ %>
+              <li class="page-item <%= currentPage==i?' active':''%>">
+                <a class="page-link" href="/assistant/certificate?page=<%= i %>">
+                  <%= i %>
+                </a>
+              </li>
+              <% } else if(i==2 || i==maxPage-1){ %>
+              <li>
+                <a class="page-link">...</a>
+              </li>
+              <% } %>
+              <% } %>
+              <li class="page-item <%= nextBtnChecker?'':'disabled' %>">
+                <a class="page-link" href="/assistant/certificate?page=<%= currentPage+1 %>" <%= previousBtnChecker?'':'tabindex="-1"' %>>&raquo;</a>
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
     </div>
   </div>

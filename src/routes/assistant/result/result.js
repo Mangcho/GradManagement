@@ -13,6 +13,35 @@ const db = mysql.createPool({
     multipleStatements: true 
 });
 
+const MakeResult = (req,res,next) =>{
+    const sql = 'SELECT APPLICATION.student_id, APPLICATION.category, APPLICATION.schedule_year, APPLICATION.schedule_semester FROM APPLICATION LEFT OUTER JOIN RESULT'
+    + ' ON RESULT.student_id = APPLICATION.student_id WHERE RESULT.student_id IS NULL AND APPLICATION.approval= true;';
+    db.query(sql, function (error, results) {
+        if (error) { // 애러 핸들링
+            console.log("Application DB query error! : ", error);
+            throw(error);
+        }
+        if(results == undefined){
+        }
+        else {
+            let sql2 = '';
+            results.forEach((value) =>{
+                sql2 = 'INSERT INTO RESULT VALUES("' + value.student_id + '", ' + value.category + ', NULL, NULL, ' + value.schedule_year +', "' + value.schedule_semester + '");'; 
+                db.query(sql2, function(error,results2){
+                    if (error) { // 애러 핸들링
+                        console.log("Application DB query error! : ", error);
+                    }
+                    
+                })
+
+            })
+        }
+        next();
+        
+    })
+}
+
+
 const GetResult = (req, res) => {
     const sql1 = 'SELECT * FROM SCHEDULE ORDER BY year DESC LIMIT 1';
     let page = req.body.page;
@@ -61,29 +90,38 @@ const PutResult = (req, res) => {
         return res.send({success:false});
     }
     if(isPass == true){
-        sql = 'UPDATE RESULT SET approval = true WHERE student_id = "';
+        sql = 'UPDATE RESULT SET timestamp = NOW()'
+        + ', approval = CASE ' 
+        + 'WHEN ISNULL(approval) THEN true '
+        + 'ELSE approval END '
+        + 'WHERE (student_id = "';
         const a = data.join('" OR student_id = "');
-        sql = sql + a + '";';
+        sql = sql + a + '") AND ISNULL(timestamp);';
     }
     else {
-        sql = 'UPDATE RESULT SET approval = false WHERE student_id = "';
+        sql = 'UPDATE RESULT SET timestamp = NOW()'
+        + ', approval = CASE ' 
+        + 'WHEN ISNULL(approval) THEN false '
+        + 'ELSE approval END '
+        + 'WHERE (student_id = "';
         const a = data.join('" OR student_id = "');
-        sql = sql + a + '";';
+        sql = sql + a + '") AND ISNULL(timestamp);';
     }
-    
-    console.log(sql);
-
     db.query(sql, function(error, results){
+        console.log(results);
         if (error) { // 애러 핸들링
             console.log("DB query error at RESULT : ", error);
             return res.send({ success: false })
         }
-        return res.send({ success: true })
+        if(results.changedRows == 0){
+            return res.send({ success: false });
+        }
+        return res.send({ success: true });
     })
 }
 
 
-router.get('/', GetResult);
+router.get('/', MakeResult, GetResult);
 router.put('/', PutResult);
 
 module.exports = router;

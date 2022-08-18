@@ -5,10 +5,33 @@
 
 <body>
   <%- include(dir + '/src/views/common/navbar-student' ) %>
-  <!-- bootstrap5 Alert -->
+  <!-- bootstrap5 Save state Alert -->
   <div class="alert alert-success d-none" id="alert_box">
     <strong id="alert_mention"></strong>
   </div>
+  <% if(app == undefined) {%>
+  <div class="alert alert-info alert-dismissible">
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    현재 제출된 신청서가 없습니다. 제출 버튼을 클릭하여 신청서를 제출해 주세요.
+  </div>
+  <% }else if(app.approval == null){ %>
+  <div class="alert alert-warning alert-dismissible">
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    귀하의 신청서는 정상접수 되었으며, 현재 심사중입니다.
+  </div>
+  <% }else if(app.approval == true) {%>
+  <div class="alert alert-success alert-dismissible">
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    귀하의 신청서는 조교에 의해 <strong>접수 승인</strong>되었습니다.
+  </div>
+  <% } else if(app.approval == false) {%>
+  <div class="alert alert-danger alert-dismissible">
+    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    귀하의 신청서는 조교에 의해 <strong>접수 거부</strong>되었습니다.
+    사유는 다음과 같습니다. <br>사유 : <%= app.reason %>
+  </div>
+  <% }%>
+  <% if(!(app != undefined && (app.approval == null || app.approval == true))){ %>
   <div class="container-sm" onclick="checkContainer()">
     <div class="row mt-3 text-center">
       <span class="d-flex justify-content-center fs-1 fw-bold">졸업인증 심사신청</span>
@@ -165,7 +188,7 @@
         e.target.classList.remove('is-valid');
         e.target.classList.add('is-invalid');
 
-        if (e.target.value.length < 1){
+        if (e.target.value.length < 1) {
           e.target.classList.remove('is-invalid');
         }
       }
@@ -186,7 +209,7 @@
         }
         e.target.classList.remove('is-valid');
         e.target.classList.add('is-invalid');
-        if (e.target.value.length < 1){
+        if (e.target.value.length < 1) {
           e.target.classList.remove('is-invalid');
         }
 
@@ -266,12 +289,12 @@
     const radioCategory = document.querySelectorAll('.radioCategory');
 
     function PostApplication() {
-    
+
       const isPrjSelected = document.querySelector('#categoryTeamProject');
-      let tempName = [];
-      let tempID = [];
+      let tempName = new Array;
+      let tempID = new Array;
       const formData = new FormData();
-      formData.append("applicationFile",real.files[0]);
+      formData.append("applicationFile", real.files[0]);
 
       radioCategory.forEach((radioObj) => {{
           if(radioObj.checked && radioObj.value != 1 && real.files.length == 1){
@@ -279,18 +302,24 @@
           } else if(radioObj.checked && radioObj.value == 1 && real.files.length == 1){
             formData.append("category",radioObj.value);
             inputIDArr.forEach((idObj) => {{
-              tempID.push(idObj.value);
+              if(idObj.value != ''){
+                tempID.push(idObj.value);
+              }
+              
             }})
-            inputNameArr.forEach((idObj) => {{
-              tempName.push(idObj.value);
+      inputNameArr.forEach((idObj) => {{
+              if(idObj.value != ''){
+                tempName.push(idObj.value);
+              }
+              
             }})
     } else {
       return;
     }
     }
     })
-    formData.append("inputNameArr",tempName);
-    formData.append("inputIdArr",tempID);
+    formData.append("inputNameArr", tempName);
+    formData.append("inputIdArr", tempID);
 
     fetch('/student/application', {
         method: 'POST',
@@ -307,24 +336,31 @@
         if (data.success == true) {
           box.classList.remove('alert-danger');
           box.classList.add('alert-success');
-          mention.textContent = '정상적으로 적용되었습니다.';
+          mention.textContent = '정상적으로 제출되었습니다.';
         } else {
           box.classList.remove('alert-success');
           box.classList.add('alert-danger');
-          mention.textContent = '적용에 실패하였습니다.';
+          mention.textContent = '제출에 실패하였습니다.';
         }
         box.classList.remove('d-none');
         setTimeout(() => {
           location.reload(true);
-        }, 800);
+        }, 1000);
       })
       .catch((error) => {
         console.error(error);
       })
     }
     const btn = document.querySelector("#save");
-    btn.addEventListener('click', PostApplication);
+    btn.addEventListener('click', PostApplication, {
+      once: true
+    });
   </script>
+  <% } else {%>
+    <div class="container-sm bg-light vh-100" style="opacity: 0.7;">
+      
+    </div>
+    <% } %>
 </body>
 
 </html>
