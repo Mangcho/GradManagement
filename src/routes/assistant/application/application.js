@@ -65,8 +65,8 @@ const PutApplication = (req, res) => {
     } else {
         sql = 'UPDATE APPLICATION SET approval = CASE ' 
         + 'WHEN ISNULL(approval) THEN false '
-        + 'ELSE approval END '
-        + 'WHERE student_id = "';
+        + 'ELSE approval END, reason = "' + data.reason
+        + '" WHERE student_id = "';
         const a = data.join('" OR student_id = "');
         sql = sql + a + '";';
     }
@@ -84,23 +84,60 @@ const PutApplication = (req, res) => {
 
 
 const GetApplicationDetail = (req, res) => {
-    const sql = 'SELECT APPLICATION.id, student_id, STUDENT.name, category, teammates, file, timestamp, approval FROM APPLICATION ' +
+    
+    const sql = 'SELECT APPLICATION.id, student_id, STUDENT.name, category, teammates, file, timestamp, approval, reason FROM APPLICATION ' +
         'LEFT JOIN STUDENT ON APPLICATION.student_id = STUDENT.id WHERE student_id="' + req.query.id + '";';
     db.query(sql, function (error, results) {
         if (error) { // 애러 핸들링
             console.log("DB query error! : Application Detail");
             throw error;
         }
-        console.log(JSON.parse(results[0].teammates));
-        const team = JSON.parse(results[0].teammates);
-        return res.render(__dirname + '/../../../views/assistant/application/applicationDetail.ejs', { paper: results[0], teammates: team });
+        if(req.query.download){
+            return res.download('src/public/upload/'+ results[0].file, '신청서.pdf');
+        }
+        return res.render(__dirname + '/../../../views/assistant/application/applicationDetail.ejs', { paper: results[0]});
     })
 }
+
+const PutApplicationDetail = (req, res) => {
+    const isPass = req.body.isPass;
+    if(!(isPass)){
+        reason = req.body.reason;
+    }
+    let sql = '';
+    console.log(req.query);
+    
+    if (isPass == true) {
+        sql = 'UPDATE APPLICATION SET approval = CASE ' 
+        + 'WHEN ISNULL(approval) THEN true '
+        + 'ELSE approval END '
+        + 'WHERE student_id = "' + req.query.id + '";';
+        
+    } else {
+        sql = 'UPDATE APPLICATION SET approval = CASE ' 
+        + 'WHEN ISNULL(approval) THEN false '
+        + 'ELSE approval END, reason = "' + reason
+        + '" WHERE student_id = "' + req.query.id + '";';
+    }
+    db.query(sql, function (error, results) {
+        if (error) { // 애러 핸들링
+            console.log("Application DB query error! : ", error);
+            return res.send({ success: false });
+        }
+        if(results.changedRows == 0){
+            return res.send({ success: false });
+        }
+        return res.send({ success: true });
+    })
+    
+}
+
 
 
 router.get('/', GetApplication);
 router.put('/', PutApplication);
 router.get('/detail', GetApplicationDetail);
+router.put('/detail', PutApplicationDetail);
 
 
 module.exports = router;

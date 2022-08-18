@@ -177,7 +177,7 @@
             backdrop: false
           });
           myModal.show();
-          return ;
+          return;
         }
       })
     }
@@ -231,6 +231,9 @@
             mention.textContent = '적용에 실패하였습니다.';
           }
           box.classList.remove('d-none');
+          setTimeout(() => {
+            location.reload(true);
+          }, 700);
         })
         .catch((error) => {
           console.error(error);
@@ -275,6 +278,9 @@
             mention.textContent = '적용에 실패하였습니다.';
           }
           box.classList.remove('d-none');
+          setTimeout(() => {
+            location.reload(true);
+          }, 700);
         })
         .catch((error) => {
           console.error(error);

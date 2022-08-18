@@ -4,15 +4,37 @@
 
 <body>
   <%- include(dir + '/src/views/common/navbar-admin' ) %>
+  <!-- bootstrap5 Modal -->
+  <div class="modal fade" id="denialModal">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">거부 사유 작성</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true"></span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <textarea class="form-control" id="denial-text" placeholder="거부 사유를 여기에 작성해 주세요."></textarea>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" id="failSubmit" data-bs-dismiss="modal">입력</button>
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">취소</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- bootstrap5 PUT result alert -->
   <div class="alert alert-dismissible alert-success d-none" id="saveAlert">
     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
     <strong id="alert-text">정상적으로 저장이 완료되었습니다.</strong>
   </div>
 
+  <!-- Main -->
   <div class="container-sm">
-    <div class="row d-flex justify-content-around text-center my-3 fs-5">
-      <div class="col border ">
+    <div class="row d-flex justify-content-around text-center my-3 fs-5 bg-light">
+      <div class="col border">
         <% if(paper.timestamp == null){ %>
         <span>-</span>
         <% }else{ %>
@@ -32,6 +54,11 @@
         <span>접수승인</span>
         <% }else{ %>
         <span>접수거부</span>
+        <% if(paper.approval != null && paper.approval == false){ %>
+          <div class="row text-center border-top">
+            <span> 거부사유 :  <%= paper.reason %> </span>
+          </div>
+          <% } %> 
         <% } %>
       </div>
     </div>
@@ -58,38 +85,37 @@
         </div>
       </div>
       <div class="col d-flex justify-content-around my-2">
-        <div class="d-flex justify-content-start p-1 rounded" style="background-color: rgba(0, 0, 0, 0.1);" <%= paper.category == 3?'checked':'' %>>
-          <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" disabled>
+        <div class="d-flex justify-content-start p-1 rounded" style="background-color: rgba(0, 0, 0, 0.1);">
+          <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" disabled <%= paper.category == 3?'checked':'' %>>
           <span class="ms-2 fs-5">학생창업</span>
         </div>
       </div>
     </div>
 
     <!-- teammates -->
-    <% if(paper.category == 1){ %>
-     aaaa <%= teammates == null? 'ss' :'a'%> 
-     <!--
+    <% if(paper.category == 1 && paper.teammates != undefined){ %>
+    <% paper.teammates = JSON.parse(paper.teammates);   %>
     <div class="row  align-items-center">
       <div class="col my-3">
         <span class="fs-3 float-start">팀원 명단</span>
       </div>
       <div class="col d-flex justify-content-around my-3">
-        <span class="border-top border-bottom border-dark w-100 text-center p-2" style="background-color: rgba(0, 0, 0, 0.1);"> <%= //teammates.first_id %> <%= //teammates.first_name %></span>
+        <span class="border-top border-bottom border-dark w-100 text-center p-2" style="background-color: rgba(0, 0, 0, 0.1);"> <%= paper.name %> <%= paper.student_id %></span>
       </div>
       <div class="col d-flex justify-content-around my-3">
-        <span class="border-top border-bottom border-dark w-100 text-center p-2" style="background-color: rgba(0, 0, 0, 0.1);"><%= //teammates.second_id %> <%= //teammates.second_name %></span>
+        <span class="border-top border-bottom border-dark w-100 text-center p-2" style="background-color: rgba(0, 0, 0, 0.1);"> <%= paper.teammates[0][0] %> <%= paper.teammates[1][0] %> </span>
       </div>
       <div class="col d-flex justify-content-around my-3">
-        <span class="border-top border-bottom border-dark w-100 text-center p-2" style="background-color: rgba(0, 0, 0, 0.1);"><%= //teammates.third_id %> <%= //teammates.third_name %></span>
+        <span class="border-top border-bottom border-dark w-100 text-center p-2" style="background-color: rgba(0, 0, 0, 0.1);"><%= paper.teammates[0][1] %> <%= paper.teammates[1][1] %></span>
       </div>
       <div class="col d-flex justify-content-around my-3">
-        <span class="border-top border-bottom border-dark w-100 text-center p-2" style="background-color: rgba(0, 0, 0, 0.1);"><%= //teammates.fourth_id %> <%= //teammates.fourth_name %></span>
+        <span class="border-top border-bottom border-dark w-100 text-center p-2" style="background-color: rgba(0, 0, 0, 0.1);">
+          <%= paper.teammates[0][2] == undefined?'미입력':paper.teammates[0][2] %> </span>
       </div>
     </div>
-    -->
     <% }else{ %>
     <div class="row d-flex text-center p-2 mt-2" style="background-color: rgba(0, 0, 0, 0.15);">
-      <span class="fs-3">팀원 해당없음</span>  
+      <span class="fs-3">팀원 해당없음</span>
     </div>
     <% } %>
 
@@ -99,21 +125,99 @@
           <input class="form-control d-none" type="file" accept=".xlsx" id="realUpload" name="uploaded_file">
           <button type="submit" class="d-none" id="realSubmit">제출</button>
         </form>
-        <button class="btn btn-primary" type="button" id="fakeUpload">다운로드</button>
-        <input type="text" class="form-control w-50" placeholder="선택된 파일 없음" id="fakeLabel" disabled>
+        <button class="btn btn-primary" type="button" id="fakeUpload" onclick="location.href= (location.href + '&download=true')">신청서 다운로드</button>
+        <input type="text" class="form-control w-50" placeholder="신청서.pdf" id="fakeLabel" disabled>
       </div>
     </div>
     <div class="row justify-content-evenly mb-2">
-      <button class="btn btn-lg btn-primary w-25" type="button" id="save">승인</button>
-      <button class="btn btn-lg btn-primary w-25" type="button" id="save">거부</button>
+      <button class="btn btn-lg btn-primary w-25" type="button" id="savePass">승인</button>
+      <button class="btn btn-lg btn-primary w-25" type="button" id="saveFail" data-bs-toggle="modal" data-bs-target="#denialModal">거부</button>
     </div>
   </div>
   <%- include(dir + '/src/views/common/footer' ) %>
-  <!-- FETCH -->
   <script>
+    const btnPass = document.querySelector('#savePass');
+    const btnFail = document.querySelector('#failSubmit');
+    const failReason = document.querySelector('#denial-text');
 
+    function PutApplicationPass() {
+      fetch(location.href, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            isPass: true
+          })
+        })
+        .then((response) => {
+          if (response.ok) {
+            box.classList.add('d-none');
+            return response.json();
+          }
+          return Promise.reject()
+        })
+        .then((data) => {
+          if (data.success == true) {
+            box.classList.remove('alert-danger');
+            box.classList.add('alert-success');
+            mention.textContent = '정상적으로 적용되었습니다.';
+          } else {
+            box.classList.remove('alert-success');
+            box.classList.add('alert-danger');
+            mention.textContent = '적용에 실패하였습니다.';
+          }
+          box.classList.remove('d-none');
+          setTimeout(() => {
+            location.reload(true);
+          }, 800);
+        })
+        .catch((error) => {
+          console.error(error);
+        })
+    }
+
+    function PutApplicationFail() {
+      fetch(location.href, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            isPass: false,
+            reason: failReason.value
+          })
+        })
+        .then((response) => {
+          if (response.ok) {
+            box.classList.add('d-none');
+            return response.json();
+          }
+          return Promise.reject()
+        })
+        .then((data) => {
+          if (data.success == true) {
+            box.classList.remove('alert-danger');
+            box.classList.add('alert-success');
+            mention.textContent = '정상적으로 적용되었습니다.';
+          } else {
+            box.classList.remove('alert-success');
+            box.classList.add('alert-danger');
+            mention.textContent = '적용에 실패하였습니다.';
+          }
+          box.classList.remove('d-none');
+          setTimeout(() => {
+            location.reload(true);
+          }, 800);
+        })
+        .catch((error) => {
+          console.error(error);
+        })
+    }
+
+    btnPass.addEventListener('click', PutApplicationPass);
+    btnFail.addEventListener('click', PutApplicationFail);
   </script>
-
 </body>
 
 </html>
