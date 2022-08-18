@@ -61,12 +61,12 @@ const PutResult = (req, res) => {
         return res.send({success:false});
     }
     if(isPass == true){
-        sql = 'UPDATE RESULT SET approval = true WHEN approval = NULL WHERE student_id = "';
+        sql = 'UPDATE RESULT SET approval = true WHERE student_id = "';
         const a = data.join('" OR student_id = "');
         sql = sql + a + '";';
     }
     else {
-        sql = 'UPDATE RESULT SET approval = false WHEN approval = NULL WHERE student_id = "';
+        sql = 'UPDATE RESULT SET approval = false WHERE student_id = "';
         const a = data.join('" OR student_id = "');
         sql = sql + a + '";';
     }

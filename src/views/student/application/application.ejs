@@ -28,25 +28,25 @@
     <div class="row row-cols-2 categoryContainer mt-3">
       <div class="col">
         <div class="rounded p-1" style="background-color: rgba(0, 0, 0, 0.1);">
-          <input class="form-check-input ms-2" type="radio" name="optionsRadios" value="" id="flexCheckDefault" %>>
+          <input class="radioCategory form-check-input ms-2" type="radio" name="optionsRadios" value="0">
           <span class="ms-2 fw-bold">졸업논문</span>
         </div>
       </div>
       <div class="col">
         <div class="rounded p-1" style="background-color: rgba(0, 0, 0, 0.1);">
-          <input class="form-check-input ms-2" type="radio" name="optionsRadios" value="" id="categoryDefault" %>>
+          <input class="radioCategory form-check-input ms-2" type="radio" name="optionsRadios" value="1" id="categoryTeamProject">
           <span class="ms-2 fw-bold">졸업작품</span>
         </div>
       </div>
       <div class="col">
         <div class="rounded p-1 mt-2" style="background-color: rgba(0, 0, 0, 0.1);">
-          <input class="form-check-input ms-2" type="radio" name="optionsRadios" value="" id="flexCheckDefault" %>>
+          <input class="radioCategory form-check-input ms-2" type="radio" name="optionsRadios" value="2">
           <span class="ms-2 fw-bold">장기현장실습</span>
         </div>
       </div>
       <div class="col">
         <div class="rounded p-1 mt-2" style="background-color: rgba(0, 0, 0, 0.1);">
-          <input class="form-check-input ms-2" type="radio" name="optionsRadios" value="" id="flexCheckDefault" %>>
+          <input class="radioCategory form-check-input ms-2" type="radio" name="optionsRadios" value="3">
           <span class="ms-2 fw-bold">학생창업</span>
         </div>
       </div>
@@ -65,32 +65,32 @@
         <input type="text" placeholder="이름" class="form-control" id="inputFirstName" value="<%= myself.name %>" disabled>
       </div>
       <div class="col form-group has-success mb-1">
-        <input type="text" placeholder="학번" class="form-control inputID" id="inputSecondID">
+        <input type="text" placeholder="학번" class="form-control inputID" id="inputSecondID" disabled>
         <div class="valid-feedback">올바른 양식입니다.</div>
         <div class="invalid-feedback">학번은 9자리의 숫자로 구성해야 합니다.</div>
       </div>
       <div class="col form-group has-success mb-1">
-        <input type="text" placeholder="이름" class="form-control inputName" id="inputSecondName">
+        <input type="text" placeholder="이름" class="form-control inputName" id="inputSecondName" disabled>
         <div class="valid-feedback">올바른 양식입니다.</div>
         <div class="invalid-feedback">이름은 한국어로만 구성해야 합니다.</div>
       </div>
       <div class="col form-group has-success mb-1">
-        <input type="text" placeholder="학번" class="form-control inputID" id="inputThirdID">
+        <input type="text" placeholder="학번" class="form-control inputID" id="inputThirdID" disabled>
         <div class="valid-feedback">올바른 양식입니다.</div>
         <div class="invalid-feedback">학번은 9자리의 숫자로 구성해야 합니다.</div>
       </div>
       <div class="col form-group has-success mb-1">
-        <input type="text" placeholder="이름" class="form-control inputName" id="inputThirdName">
+        <input type="text" placeholder="이름" class="form-control inputName" id="inputThirdName" disabled>
         <div class="valid-feedback">올바른 양식입니다.</div>
         <div class="invalid-feedback">이름은 한국어로만 구성해야 합니다.</div>
       </div>
       <div class="col form-group has-success mb-1">
-        <input type="text" placeholder="학번" class="form-control inputID" id="inputFourthID">
+        <input type="text" placeholder="학번" class="form-control inputID" id="inputFourthID" disabled>
         <div class="valid-feedback">올바른 양식입니다.</div>
         <div class="invalid-feedback">학번은 9자리의 숫자로 구성해야 합니다.</div>
       </div>
       <div class="col form-group has-success mb-1">
-        <input type="text" placeholder="이름" class="form-control inputName" id="inputFourthName">
+        <input type="text" placeholder="이름" class="form-control inputName" id="inputFourthName" disabled>
         <div class="valid-feedback">올바른 양식입니다.</div>
         <div class="invalid-feedback">이름은 한국어로만 구성해야 합니다.</div>
       </div>
@@ -113,7 +113,7 @@
     </div>
     <div class="row">
       <div class="col justify-content-evenly d-flex">
-        <button class="btn btn-lg w-50 btn-primary" type="button">제출</button>
+        <button class="btn btn-lg w-50 btn-primary" type="button" id="save">제출</button>
       </div>
     </div>
   </div>
@@ -126,7 +126,7 @@
 
     const inputIDArr = document.querySelectorAll('.inputID');
     const inputNameArr = document.querySelectorAll('.inputName');
-    const gradItem = document.querySelector('#categoryDefault');
+    const gradItem = document.querySelector('#categoryTeamProject');
     const categorySelecter = document.querySelector('.categoryContainer');
 
     let idCorrectCount = 0;
@@ -148,7 +148,6 @@
         obj.disabled = false;
     }})
       }
-
     }
     categorySelecter.addEventListener('click', disableAll);
 
@@ -162,9 +161,15 @@
         if (e.target.classList.contains('is-valid') && idCorrectCount > 0) {
           idCorrectCount--;
         }
+
         e.target.classList.remove('is-valid');
         e.target.classList.add('is-invalid');
+
+        if (e.target.value.length < 1){
+          e.target.classList.remove('is-invalid');
+        }
       }
+
     }
     inputIDArr.forEach((obj) => {{
         obj.addEventListener('change', IDChecker);
@@ -181,6 +186,9 @@
         }
         e.target.classList.remove('is-valid');
         e.target.classList.add('is-invalid');
+        if (e.target.value.length < 1){
+          e.target.classList.remove('is-invalid');
+        }
 
       }
     }
@@ -217,10 +225,9 @@
       }
     }
     inputRadio.forEach((obj) => {{
-        obj.addEventListener('click', isRadioChecked);
+        obj.addEventListener('change', isRadioChecked);
     }})
 
-    // Progress Bar Main
     function checkContainer() {
       if (gradItem.checked == true) {
         if (!(radioState)) {
@@ -243,7 +250,7 @@
         if (!(radioState)) {
           progressBar.ariaValueNow = 1;
           progressBar.style.width = '1%';
-        } else if (radioState && real.files.length == 0)  {
+        } else if (radioState && real.files.length == 0) {
           progressBar.ariaValueNow = 50;
           progressBar.style.width = '50%';
         } else if (radioState && real.files.length == 1) {
@@ -251,54 +258,72 @@
           progressBar.style.width = '100%';
         }
       }
-
-
     }
 
     // FETCH
     const box = document.querySelector('#alert_box');
     const mention = document.querySelector('#alert_mention');
+    const radioCategory = document.querySelectorAll('.radioCategory');
 
     function PostApplication() {
+    
+      const isPrjSelected = document.querySelector('#categoryTeamProject');
+      let tempName = [];
+      let tempID = [];
+      const formData = new FormData();
+      formData.append("applicationFile",real.files[0]);
 
-      fetch('/student/application', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            Input_phone: inputPhone,
-            Input_email: inputEmail,
-          })
-        })
-        .then((response) => {
-          if (response.ok) {
-            box.classList.add('d-none');
-            return response.json();
-          }
-          return Promise.reject(rejectResponse)
-        })
-        .then((data) => {
-          if (data.success == true) {
-            box.classList.remove('alert-danger');
-            box.classList.add('alert-success');
-            mention.textContent = '정상적으로 적용되었습니다.';
-          } else {
-            box.classList.remove('alert-success');
-            box.classList.add('alert-danger');
-            mention.textContent = '적용에 실패하였습니다.';
-          }
-          box.classList.remove('d-none');
-          setTimeout(() => {
-            location.reload(true);
-          }, 800);
-        })
-        .catch((error) => {
-          console.error(error);
-        })
+      radioCategory.forEach((radioObj) => {{
+          if(radioObj.checked && radioObj.value != 1 && real.files.length == 1){
+            formData.append("category",radioObj.value);
+          } else if(radioObj.checked && radioObj.value == 1 && real.files.length == 1){
+            formData.append("category",radioObj.value);
+            inputIDArr.forEach((idObj) => {{
+              tempID.push(idObj.value);
+            }})
+            inputNameArr.forEach((idObj) => {{
+              tempName.push(idObj.value);
+            }})
+    } else {
+      return;
+    }
+    }
+    })
+    formData.append("inputNameArr",tempName);
+    formData.append("inputIdArr",tempID);
+
+    fetch('/student/application', {
+        method: 'POST',
+        body: formData
+      })
+      .then((response) => {
+        if (response.ok) {
+          box.classList.add('d-none');
+          return response.json();
+        }
+        return Promise.reject(rejectResponse)
+      })
+      .then((data) => {
+        if (data.success == true) {
+          box.classList.remove('alert-danger');
+          box.classList.add('alert-success');
+          mention.textContent = '정상적으로 적용되었습니다.';
+        } else {
+          box.classList.remove('alert-success');
+          box.classList.add('alert-danger');
+          mention.textContent = '적용에 실패하였습니다.';
+        }
+        box.classList.remove('d-none');
+        setTimeout(() => {
+          location.reload(true);
+        }, 800);
+      })
+      .catch((error) => {
+        console.error(error);
+      })
     }
     const btn = document.querySelector("#save");
-    //btn.addEventListener('click', PutAuth);
+    btn.addEventListener('click', PostApplication);
   </script>
 </body>
 
