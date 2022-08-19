@@ -35,7 +35,6 @@ const upload = multer({
     }
 });
 
-
 const GetApplication = (req, res) => {
     const sql = 'SELECT id, name FROM STUDENT WHERE id="' + req.session.userId + '";';
     const sql2 = 'SELECT * FROM APPLICATION LEFT JOIN SCHEDULE ON APPLICATION.schedule_year = SCHEDULE.year AND APPLICATION.schedule_semester = SCHEDULE.semester ' +
@@ -101,9 +100,6 @@ const PostApplication = (req, res) => {
         })
     })
 }
-
-
-
 
 
 router.get('/', GetApplication);

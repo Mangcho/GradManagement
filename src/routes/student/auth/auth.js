@@ -4,11 +4,12 @@ const mysql = require('mysql2');
 
 const router = express.Router();
 
-const db = mysql.createConnection({
+const db = mysql.createPool({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
     password: process.env.DB_PW,
     database: process.env.DB_NAME,
+    connectionLimit: process.env.DB_CONN_LIMIT,
     multipleStatements: true
 });
 
@@ -48,7 +49,6 @@ const PutAuth = (req, res) => {
             return res.end(500);
         }
     })
-
 }
 
 const GetPassword = (req, res) => {
@@ -92,13 +92,7 @@ const PutPassword = (req, res) => {
             }
         }
     })
-
-
 }
-
-
-
-
 
 router.get('/', GetAuth);
 router.put('/', PutAuth);

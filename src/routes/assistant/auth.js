@@ -97,7 +97,6 @@ const PutStudentDetail = (req, res) => {
             return res.end(500);
         }
     })
-
 }
 
 const GetPasswordReset = (req, res) => {
@@ -108,7 +107,6 @@ const PutPasswordReset = (req, res) => {
     const Input_ID = req.body.Input_ID;
     const idChecker = /^[\d]{9}$/g;
     const cryPW = GetHash(String(Input_ID));
-
 
     if (String(Input_ID).search(idChecker) > -1) {
         const sql = "UPDATE STUDENT SET password ='"+ cryPW + "'WHERE id = '" + Input_ID + "';";
@@ -125,7 +123,6 @@ const PutPasswordReset = (req, res) => {
     else {
         return res.send({ success: false })
     }
-
 }
 
 

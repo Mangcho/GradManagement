@@ -7,11 +7,12 @@ const path = require('path');
 const router = express.Router();
 
 // DB 연결
-const db = mysql.createConnection({
+const db = mysql.createPool({
     host: 'localhost',
     user: process.env.DB_USER,
     password: process.env.DB_PW,
-    database: process.env.DB_NAME
+    database: process.env.DB_NAME,
+    connectionLimit: process.env.DB_CONN_LIMIT
 });
 
 const GetLogin = (req, res) => {
@@ -21,7 +22,6 @@ const GetLogin = (req, res) => {
     else {
         res.render(__dirname + '/../../views/common/login.ejs', {success : true});
     }
-    
 }
 
 const GetHash = (data) => {

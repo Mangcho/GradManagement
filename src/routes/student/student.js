@@ -13,7 +13,6 @@ const db = mysql.createPool({
     multipleStatements: true
 });
 
-
 const GetStudentMain = (req, res) => {
     const sql = 'SELECT * FROM SCHEDULE WHERE start <= NOW() AND end >= NOW();';
     const sql2 = 'SELECT * FROM NOTICE ORDER BY id DESC LIMIT 7;';
@@ -27,12 +26,10 @@ const GetStudentMain = (req, res) => {
             return res.render(__dirname + '/../../views/student/student.ejs', { success: false });
         }
         else if(results.length == 0 ){
-            // 졸업인증 없음으로 표시되게 할것
             return res.render(__dirname + '/../../views/student/student.ejs', { success: true, term: false });
         }
 
         return res.render(__dirname + '/../../views/student/student.ejs', { success: true, term: true, schedule:results[0][0], noticeList:results[1] });
-
     })
 }
 

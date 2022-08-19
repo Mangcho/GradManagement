@@ -31,16 +31,12 @@ const MakeResult = (req,res,next) =>{
                     if (error) { // 애러 핸들링
                         console.log("Application DB query error! : ", error);
                     }
-                    
                 })
-
             })
         }
-        next();
-        
+        next();  
     })
 }
-
 
 const GetResult = (req, res) => {
     const sql1 = 'SELECT * FROM SCHEDULE ORDER BY year DESC LIMIT 1';
@@ -78,8 +74,6 @@ const GetResult = (req, res) => {
             }
             return res.render(__dirname + '/../../../views/assistant/result/result.ejs', { success: true, results: results1, data: results2[1], currentPage: page, maxPage: maxPage });
         })
-        
-        
     })
 }
 
@@ -119,7 +113,6 @@ const PutResult = (req, res) => {
         return res.send({ success: true });
     })
 }
-
 
 router.get('/', MakeResult, GetResult);
 router.put('/', PutResult);

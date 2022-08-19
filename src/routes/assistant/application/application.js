@@ -82,7 +82,6 @@ const PutApplication = (req, res) => {
     })
 }
 
-
 const GetApplicationDetail = (req, res) => {
     
     const sql = 'SELECT APPLICATION.id, student_id, STUDENT.name, category, teammates, file, timestamp, approval, reason FROM APPLICATION ' +
@@ -131,8 +130,6 @@ const PutApplicationDetail = (req, res) => {
     })
     
 }
-
-
 
 router.get('/', GetApplication);
 router.put('/', PutApplication);

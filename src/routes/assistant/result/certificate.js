@@ -25,8 +25,6 @@ const GetCertificate = (req, res) => {
         page = Math.max(1, page);
     }
 
-    
-
     const sql = 'SELECT student_id FROM RESULT WHERE approval = true;';
     
 
@@ -48,8 +46,6 @@ const GetCertificate = (req, res) => {
     })
 }
 
-
 router.get('/', GetCertificate);
-
 
 module.exports = router;

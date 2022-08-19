@@ -37,11 +37,6 @@ const GetCertificate = (req, res) => {
     })
 }
 
-
-
-
-
-
 router.get('/', GetCertificate);
 
 module.exports = router;

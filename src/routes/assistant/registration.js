@@ -68,8 +68,6 @@ const GetRegistration = (req, res) => {
 }
 
 
-
-
 const PostRegistration = (req, res) => {
     let results = new Array;
 
@@ -125,7 +123,6 @@ const PostRegistration = (req, res) => {
                                                 return res.render(__dirname + '/../../views/assistant/auth/resultRegistration.ejs', { sucess: true, results: results });
                                             }
                                         }
-
                                     })
                                     .catch((error) => {
                                         console.log("DB error :", error.sqlMessage);
@@ -155,7 +152,6 @@ const PostRegistration = (req, res) => {
     } else {
         return res.render(__dirname + '/../../views/assistant/auth/resultRegistration.ejs', { sucess: false })
     }
-
 }
 
 const GetTemplateFile = (req, res) => {

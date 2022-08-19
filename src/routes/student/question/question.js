@@ -14,12 +14,6 @@ const db = mysql.createPool({
     multipleStatements: true
 });
 
-const GetHash = (data) => {
-    const hash = crypto.createHash('sha256');
-    hash.update(data);
-    return hash.digest('hex');
-}
-
 const GetQuestion = (req, res) => {
     let page = req.body.page;
     let sql2;

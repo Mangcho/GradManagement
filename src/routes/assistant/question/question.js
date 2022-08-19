@@ -1,6 +1,5 @@
 const express = require('express');
 const mysql = require('mysql2');
-const crypto = require('node:crypto');
 
 const router = express.Router();
 
@@ -13,12 +12,6 @@ const db = mysql.createPool({
     dateStrings: true, // return DATE type
     multipleStatements: true
 });
-
-const GetHash = (data) => {
-    const hash = crypto.createHash('sha256');
-    hash.update(data);
-    return hash.digest('hex');
-}
 
 const GetQuestion = (req, res) => {
     let page = req.body.page;
@@ -122,7 +115,6 @@ const PostQuestionComment = (req, res) => {
 
     })
 }
-
 
 const GetQuestionForm = (req, res) => {
     return res.render(__dirname + '/../../../views/assistant/question/questionForm.ejs');
