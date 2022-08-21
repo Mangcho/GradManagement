@@ -1,17 +1,8 @@
 const express = require('express');
 const crypto = require('node:crypto');
-const mysql = require('mysql2');
+const db = require('../../settings/database/config');
 
 const router = express.Router();
-
-const db = mysql.createPool({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PW,
-    database: process.env.DB_NAME,
-    connectionLimit: process.env.DB_CONN_LIMIT,
-    multipleStatements: true
-});
 
 const GetHash = (data) => {
     const hash = crypto.createHash('sha256');
@@ -127,10 +118,12 @@ const PutPasswordReset = (req, res) => {
 
 
 router.get('/', GetAssistantAuth);
-router.get('/password', GetPasswordReset);
-router.put('/password', PutPasswordReset);
-router.get('/detail', GetStudentDetail);
-router.put('/detail', PutStudentDetail);
+router.route('/password')
+.get(GetPasswordReset)
+.put(PutPasswordReset)
 
+router.route('/detail')
+.get(GetStudentDetail)
+.put(PutStudentDetail)
 
 module.exports = router;

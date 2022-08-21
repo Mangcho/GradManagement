@@ -1,17 +1,7 @@
 const express = require('express');
-const mysql = require('mysql2');
+const db = require('../../../settings/database/config');
 
 const router = express.Router();
-
-const db = mysql.createPool({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PW,
-    database: process.env.DB_NAME,
-    connectionLimit: process.env.DB_CONN_LIMIT,
-    dateStrings: true, // return DATE type
-    multipleStatements: true
-});
 
 const GetApplication = (req, res) => {
     const sql1 = 'SELECT * FROM SCHEDULE ORDER BY year DESC LIMIT 1';
@@ -26,7 +16,7 @@ const GetApplication = (req, res) => {
     }
 
     db.query(sql1, function (error, results1) {
-        if (error) { // 애러 핸들링
+        if (error) { 
             console.log("DB query error at SCHEDULE : ", error);
             return res.render(__dirname + '/../../../views/assistant/application/application.ejs', { success: false })
         }
@@ -41,7 +31,7 @@ const GetApplication = (req, res) => {
             'LIMIT 20 OFFSET ' + Number((page - 1) * 20) + ';';
 
         db.query(sql2 + sql3, function (error, results2) {
-            if (error) { // 애러 핸들링
+            if (error) { 
                 console.log("DB query error at SCHEDULE : ", error);
                 return res.render(__dirname + '/../../../views/assistant/application/application.ejs', { success: false })
             }
@@ -71,7 +61,7 @@ const PutApplication = (req, res) => {
         sql = sql + a + '";';
     }
     db.query(sql, function (error, results) {
-        if (error) { // 애러 핸들링
+        if (error) { 
             console.log("Application DB query error! : ", error);
             return res.send({ success: false });
         }
@@ -83,16 +73,15 @@ const PutApplication = (req, res) => {
 }
 
 const GetApplicationDetail = (req, res) => {
-    
     const sql = 'SELECT APPLICATION.id, student_id, STUDENT.name, category, teammates, file, timestamp, approval, reason FROM APPLICATION ' +
         'LEFT JOIN STUDENT ON APPLICATION.student_id = STUDENT.id WHERE student_id="' + req.query.id + '";';
     db.query(sql, function (error, results) {
-        if (error) { // 애러 핸들링
+        if (error) { 
             console.log("DB query error! : Application Detail");
             throw error;
         }
         if(req.query.download){
-            return res.download('src/public/upload/'+ results[0].file, '신청서.pdf');
+            return res.download('src/public/upload/'+ results[0].file, req.query.id+'_신청서.pdf');
         }
         return res.render(__dirname + '/../../../views/assistant/application/applicationDetail.ejs', { paper: results[0]});
     })
@@ -104,7 +93,6 @@ const PutApplicationDetail = (req, res) => {
         reason = req.body.reason;
     }
     let sql = '';
-    console.log(req.query);
     
     if (isPass == true) {
         sql = 'UPDATE APPLICATION SET approval = CASE ' 
@@ -119,7 +107,7 @@ const PutApplicationDetail = (req, res) => {
         + '" WHERE student_id = "' + req.query.id + '";';
     }
     db.query(sql, function (error, results) {
-        if (error) { // 애러 핸들링
+        if (error) { 
             console.log("Application DB query error! : ", error);
             return res.send({ success: false });
         }
@@ -128,13 +116,14 @@ const PutApplicationDetail = (req, res) => {
         }
         return res.send({ success: true });
     })
-    
 }
 
-router.get('/', GetApplication);
-router.put('/', PutApplication);
-router.get('/detail', GetApplicationDetail);
-router.put('/detail', PutApplicationDetail);
+router.route('/')
+.get(GetApplication)
+.put(PutApplication)
 
+router.route('/detail')
+.get(GetApplicationDetail)
+.put(PutApplicationDetail)
 
 module.exports = router;

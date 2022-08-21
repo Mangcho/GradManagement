@@ -1,21 +1,12 @@
 const express = require('express');
-const mysql = require('mysql2');
+const db = require('../../../settings/database/config');
 
 const router = express.Router();
-
-const db = mysql.createPool({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PW,
-    database: process.env.DB_NAME,
-    connectionLimit: process.env.DB_CONN_LIMIT,
-    dateStrings: true, // return DATE type 
-});
 
 const GetSchedule = (req, res) => {
     const sql = 'SELECT * FROM SCHEDULE ORDER BY year DESC LIMIT 1'
     db.query(sql, function (error, results) {
-        if (error) { // 애러 핸들링
+        if (error) { 
             console.log("DB query error at SCHEDULE : ", error);
             return res.render(__dirname + '/../../../views/assistant/application/schedule.ejs', { success: false })
         }
@@ -28,7 +19,7 @@ const PutSchedule = (req, res) => {
     const sql1 = "SELECT * FROM SCHEDULE WHERE year = " + inputYear + " AND semester = '" + inputSemester + "';";
 
     db.query(sql1, function (error, results) {
-        if (error) { // 애러 핸들링
+        if (error) { 
             console.log("DB query error at SCHEDULE : ", error);
             return res.send({ success: false })
         }
@@ -39,7 +30,7 @@ const PutSchedule = (req, res) => {
                 "VALUES (" + inputYear + ", '" + inputSemester + "', '" + inputStartDate + "', '" + inputEndDate + "')" +
                 "ON DUPLICATE KEY UPDATE start = '" + inputStartDate + "', end = '" + inputEndDate + "';";
             db.query(sql2, function (error, results) {
-                if (error) { // 애러 핸들링
+                if (error) { 
                     console.log("DB query error at SCHEDULE : ", error);
                     throw error;
                 }
@@ -58,8 +49,8 @@ const PutSchedule = (req, res) => {
     })
 }
 
-router.get('/', GetSchedule);
-router.put('/', PutSchedule);
-
+router.route('/')
+.get(GetSchedule)
+.put(PutSchedule)
 
 module.exports = router;

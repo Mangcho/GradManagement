@@ -1,18 +1,7 @@
 const express = require('express');
-const mysql = require('mysql2');
-const crypto = require('node:crypto');
+const db = require('../../../settings/database/config');
 
 const router = express.Router();
-
-const db = mysql.createPool({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PW,
-    database: process.env.DB_NAME,
-    connectionLimit: process.env.DB_CONN_LIMIT,
-    dateStrings: true, // return DATE type
-    multipleStatements: true
-});
 
 const GetQuestion = (req, res) => {
     let page = req.body.page;
@@ -24,7 +13,6 @@ const GetQuestion = (req, res) => {
         page = parseInt(req.query.page);
         page = Math.max(1, page);
     }
-
     if (req.query.search === undefined) {
         sql2 = 'SELECT QUESTION.id, secret, title, student_id, STUDENT.name, STUDENT.state, timestamp FROM QUESTION ' +
             'LEFT JOIN STUDENT ON QUESTION.student_id = STUDENT.id ' +
@@ -39,7 +27,7 @@ const GetQuestion = (req, res) => {
 
     const sql1 = 'SELECT id FROM QUESTION;';
     db.query(sql1 + sql2, function (error, results) {
-        if (error) { // 애러 핸들링
+        if (error) { 
             console.log("QUESTION DB query error! ", error);
             throw error;
         }
@@ -78,7 +66,6 @@ const PostQuestionComment = (req,res) => {
     const student_id = req.session.userId;
     const question_id =req.query.id;
     
-    
     if(content == ''){
         return res.send({ success : false });
     }
@@ -104,10 +91,8 @@ const PostQuestionComment = (req,res) => {
             }
             return res.send({ success : true });
         })
-        
     })
 }
-
 
 const GetQuestionForm = (req, res) => {
     return res.render(__dirname + '/../../../views/student/question/questionForm.ejs');
@@ -120,7 +105,6 @@ const PostQuestionForm = (req, res) => {
     if(title == ''){
         return res.send({ success : false });
     }
-    
     sql = "INSERT INTO QUESTION VALUES(NULL, '" + id + "', "+ secret + ", NULL, '" + title + "', '" + timestamp + "', '" + JSON.stringify(content) + "');";
     
     db.query(sql, function (error, results) {
@@ -133,9 +117,12 @@ const PostQuestionForm = (req, res) => {
 }
 
 router.get('/', GetQuestion);
-router.get('/detail', GetQuestionDetail);
-router.post('/detail', PostQuestionComment);
-router.get('/form', GetQuestionForm);
-router.post('/form', PostQuestionForm);
+router.route('/detail')
+.get(GetQuestionDetail)
+.post(PostQuestionComment)
+
+router.route('/form')
+.get(GetQuestionForm)
+.post(PostQuestionForm)
 
 module.exports = router;

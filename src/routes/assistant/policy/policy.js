@@ -1,5 +1,4 @@
 const express = require('express');
-const mysql = require('mysql2');
 const multer = require('multer');
 
 const router = express.Router();
@@ -32,7 +31,6 @@ const PostPolicy = (req, res) => {
     if(req.file == undefined){
         return res.status(400).end();
     }
-
     if (req.file.mimetype == 'application/pdf') {
         return res.render(__dirname + '/../../../views/assistant/policy/policy.ejs');
     } else {
@@ -40,7 +38,8 @@ const PostPolicy = (req, res) => {
     }
 }
 
-router.get('/', GetPolicy);
-router.post('/', upload.single('graduationPolicy'), PostPolicy);
+router.route('/')
+.get(GetPolicy)
+.post(upload.single('graduationPolicy'), PostPolicy)
 
 module.exports = router;

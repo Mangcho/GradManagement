@@ -1,23 +1,13 @@
 const express = require('express');
-const mysql = require('mysql2');
+const db = require('../../../settings/database/config');
 
 const router = express.Router();
-
-const db = mysql.createPool({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PW,
-    database: process.env.DB_NAME,
-    connectionLimit: process.env.DB_CONN_LIMIT,
-    dateStrings: true, // return DATE type 
-    multipleStatements: true 
-});
 
 const MakeResult = (req,res,next) =>{
     const sql = 'SELECT APPLICATION.student_id, APPLICATION.category, APPLICATION.schedule_year, APPLICATION.schedule_semester FROM APPLICATION LEFT OUTER JOIN RESULT'
     + ' ON RESULT.student_id = APPLICATION.student_id WHERE RESULT.student_id IS NULL AND APPLICATION.approval= true;';
     db.query(sql, function (error, results) {
-        if (error) { // 애러 핸들링
+        if (error) { 
             console.log("Application DB query error! : ", error);
             throw(error);
         }
@@ -28,13 +18,13 @@ const MakeResult = (req,res,next) =>{
             results.forEach((value) =>{
                 sql2 = 'INSERT INTO RESULT VALUES("' + value.student_id + '", ' + value.category + ', NULL, NULL, ' + value.schedule_year +', "' + value.schedule_semester + '");'; 
                 db.query(sql2, function(error,results2){
-                    if (error) { // 애러 핸들링
+                    if (error) { 
                         console.log("Application DB query error! : ", error);
                     }
                 })
             })
         }
-        next();  
+        next();
     })
 }
 
@@ -51,7 +41,7 @@ const GetResult = (req, res) => {
     }
 
     db.query(sql1, function (error, results1) {
-        if (error) { // 애러 핸들링
+        if (error) {
             console.log("DB query error at RESULT : ", error);
             return res.render(__dirname + '/../../../views/assistant/result/result.ejs', { success: false })
         }
@@ -67,8 +57,7 @@ const GetResult = (req, res) => {
 
         db.query(sql2 + sql3, function (error, results2) {
             const maxPage = Math.ceil(results2[0].length / 20);
-            
-            if (error) { // 애러 핸들링
+            if (error) {
                 console.log("DB query error at RESULT : ", error);
                 return res.render(__dirname + '/../../../views/assistant/result/result.ejs', { success: false })
             }
@@ -114,7 +103,8 @@ const PutResult = (req, res) => {
     })
 }
 
-router.get('/', MakeResult, GetResult);
-router.put('/', PutResult);
+router.route('/')
+.get(MakeResult, GetResult)
+.put(PutResult)
 
 module.exports = router;
