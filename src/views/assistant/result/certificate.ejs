@@ -65,6 +65,9 @@
             </tr>
           </tbody>
         </table>
+        <div class="d-flex justify-content-start">
+          <button class="btn btn-lg btn-primary ms-1" value="true" onclick="location.href='/assistant/certificate/print'">현재학기 합격자 명단 다운로드</button>
+        </div>
         <!--Pagination Variables-->
         <% const offset=2; let previousBtnChecker=currentPage>1; let nextBtnChecker = currentPage<maxPage; %>
         <!--Pagination-->
@@ -111,6 +114,7 @@
       }
     }
     btn.addEventListener('click', GetSearch);
+
   </script>
 </body>
 
