@@ -1,16 +1,8 @@
 const express = require('express');
 const crypto = require('node:crypto');
-const mysql = require('mysql2');
+const db = require('../../../settings/database/config');
 
 const router = express.Router();
-
-const db = mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PW,
-    database: process.env.DB_NAME,
-    multipleStatements: true
-});
 
 const GetHash = (data) => {
     const hash = crypto.createHash('sha256');
@@ -48,12 +40,10 @@ const PutAuth = (req, res) => {
             return res.end(500);
         }
     })
-
 }
 
 const GetPassword = (req, res) => {
     return res.render(__dirname + '/../../../views/student/auth/password.ejs');
-
 }
 
 const PutPassword = (req, res) => {
@@ -92,17 +82,14 @@ const PutPassword = (req, res) => {
             }
         }
     })
-
-
 }
 
+router.route('/')
+.get(GetAuth)
+.put(PutAuth)
 
-
-
-
-router.get('/', GetAuth);
-router.put('/', PutAuth);
-router.get('/password', GetPassword);
-router.put('/password', PutPassword);
+router.route('/password')
+.get(GetPassword)
+.put(PutPassword)
 
 module.exports = router;

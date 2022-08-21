@@ -1,17 +1,8 @@
 const express = require('express');
 const crypto = require('node:crypto');
-const mysql = require('mysql2');
+const db = require('../../settings/database/config');
 
 const router = express.Router();
-
-const db = mysql.createPool({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PW,
-    database: process.env.DB_NAME,
-    connectionLimit: process.env.DB_CONN_LIMIT,
-    multipleStatements: true
-});
 
 const GetHash = (data) => {
     const hash = crypto.createHash('sha256');
@@ -97,7 +88,6 @@ const PutStudentDetail = (req, res) => {
             return res.end(500);
         }
     })
-
 }
 
 const GetPasswordReset = (req, res) => {
@@ -108,7 +98,6 @@ const PutPasswordReset = (req, res) => {
     const Input_ID = req.body.Input_ID;
     const idChecker = /^[\d]{9}$/g;
     const cryPW = GetHash(String(Input_ID));
-
 
     if (String(Input_ID).search(idChecker) > -1) {
         const sql = "UPDATE STUDENT SET password ='"+ cryPW + "'WHERE id = '" + Input_ID + "';";
@@ -125,15 +114,16 @@ const PutPasswordReset = (req, res) => {
     else {
         return res.send({ success: false })
     }
-
 }
 
 
 router.get('/', GetAssistantAuth);
-router.get('/password', GetPasswordReset);
-router.put('/password', PutPasswordReset);
-router.get('/detail', GetStudentDetail);
-router.put('/detail', PutStudentDetail);
+router.route('/password')
+.get(GetPasswordReset)
+.put(PutPasswordReset)
 
+router.route('/detail')
+.get(GetStudentDetail)
+.put(PutStudentDetail)
 
 module.exports = router;

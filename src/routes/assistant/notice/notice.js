@@ -1,17 +1,7 @@
 const express = require('express');
-const mysql = require('mysql2');
+const db = require('../../../settings/database/config');
 
 const router = express.Router();
-
-const db = mysql.createPool({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PW,
-    database: process.env.DB_NAME,
-    connectionLimit: process.env.DB_CONN_LIMIT,
-    dateStrings: true, // return DATE type
-    multipleStatements: true
-});
 
 const GetNotice = (req, res) => {
     let page = req.body.page;
@@ -32,7 +22,7 @@ const GetNotice = (req, res) => {
 
     const sql1 = 'SELECT id FROM NOTICE;';
     db.query(sql1 + sql2, function (error, results) {
-        if (error) { // 애러 핸들링
+        if (error) { 
             console.log("NOTICE DB query error! ", error);
             throw error;
         }
@@ -52,7 +42,7 @@ const DeleteNotice = (req, res) => {
     sql = sql + a + ';';
 
     db.query(sql, function (error, results) {
-        if (error) { // 애러 핸들링
+        if (error) { 
             console.log("NOTICE DB query error! : ", error);
             return res.send({ success: false });
         }
@@ -63,7 +53,7 @@ const DeleteNotice = (req, res) => {
 const GetNoticeDetail = (req,res) => {
     const sql = 'SELECT id, title, timestamp, content FROM NOTICE WHERE id=' + req.query.id + ';';
     db.query(sql, function (error, results) {
-        if (error) { // 애러 핸들링
+        if (error) { 
             console.log("DB query error!");
             throw error;
         }
@@ -82,7 +72,7 @@ const PostNoticeForm = (req, res) => {
     }
     const sql = "INSERT INTO NOTICE VALUES(NULL, '" + title + "', '" + timestamp + "', '" + JSON.stringify(content) + "');";
     db.query(sql, function (error, results) {
-        if (error) { // 애러 핸들링
+        if (error) { 
             console.log("NOTICE DB query error! : ", error);
             return res.send({ success : false });
         }
@@ -90,12 +80,14 @@ const PostNoticeForm = (req, res) => {
     })
 }
 
+router.route('/')
+.get(GetNotice)
+.delete(DeleteNotice)
 
-
-router.get('/', GetNotice);
-router.delete('/', DeleteNotice);
 router.get('/detail', GetNoticeDetail);
-router.get('/form', GetNoticeForm);
-router.post('/form', PostNoticeForm);
+
+router.route('/form')
+.get(GetNoticeForm)
+.post(PostNoticeForm)
 
 module.exports = router;

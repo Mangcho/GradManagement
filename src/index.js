@@ -4,6 +4,7 @@ require('dotenv').config() // process.env config
 const express = require('express');
 const session = require('express-session');
 const favicon = require('serve-favicon');
+const db = require('./settings/database/config.js');
 
 // Routing Import
 // Common Import

@@ -1,9 +1,9 @@
 const express = require('express');
-const mysql = require('mysql2');
 const multer = require('multer');
 const excel = require('exceljs');
 const fs = require('fs');
 const crypto = require('node:crypto');
+const db = require('../../settings/database/config');
 
 const router = express.Router();
 const storage = multer.diskStorage({
@@ -37,14 +37,6 @@ const upload = multer({
     storage: storage
 });
 
-const db = mysql.createPool({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PW,
-    database: process.env.DB_NAME,
-    connectionLimit: process.env.DB_CONN_LIMIT
-});
-
 const GetHash = (data) => {
     const hash = crypto.createHash('sha256');
     hash.update(data);
@@ -66,9 +58,6 @@ const GetRegistration = (req, res) => {
     });
     return res.render(__dirname + '/../../views/assistant/auth/registration.ejs');
 }
-
-
-
 
 const PostRegistration = (req, res) => {
     let results = new Array;
@@ -109,7 +98,6 @@ const PostRegistration = (req, res) => {
 
                                 db.promise().execute(sql)
                                     .then(([rows, fields]) => {
-
                                         if (rows.affectedRows == 1) {
                                             lineData.push(true);
                                             results.push(lineData.slice());
@@ -125,7 +113,6 @@ const PostRegistration = (req, res) => {
                                                 return res.render(__dirname + '/../../views/assistant/auth/resultRegistration.ejs', { sucess: true, results: results });
                                             }
                                         }
-
                                     })
                                     .catch((error) => {
                                         console.log("DB error :", error.sqlMessage);
@@ -155,15 +142,16 @@ const PostRegistration = (req, res) => {
     } else {
         return res.render(__dirname + '/../../views/assistant/auth/resultRegistration.ejs', { sucess: false })
     }
-
 }
 
 const GetTemplateFile = (req, res) => {
     return res.download('/home/sjkim/GradManagement/src/public/templates/학생_계정_추가_양식.xlsx');
 }
 
-router.get('/', GetRegistration);
-router.post('/', upload.single('uploaded_file'), PostRegistration);
+router.route('/')
+.get(GetRegistration)
+.post(upload.single('uploaded_file'), PostRegistration)
+
 router.get('/download', GetTemplateFile);
 
 module.exports = router;

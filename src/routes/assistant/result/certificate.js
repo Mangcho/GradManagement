@@ -1,17 +1,7 @@
 const express = require('express');
-const mysql = require('mysql2');
+const db = require('../../../settings/database/config');
 
 const router = express.Router();
-
-const db = mysql.createPool({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PW,
-    database: process.env.DB_NAME,
-    connectionLimit: process.env.DB_CONN_LIMIT,
-    dateStrings: true, // return DATE type 
-    multipleStatements: true
-});
 
 const GetCertificate = (req, res) => {
 
@@ -25,11 +15,7 @@ const GetCertificate = (req, res) => {
         page = Math.max(1, page);
     }
 
-    
-
     const sql = 'SELECT student_id FROM RESULT WHERE approval = true;';
-    
-
     const sql2 = 'SELECT STUDENT.id, STUDENT.name, category, timestamp, approval, schedule_year, schedule_semester ' +
         'FROM RESULT LEFT JOIN STUDENT ON RESULT.student_id = STUDENT.id ' +
         'LEFT JOIN SCHEDULE ON RESULT.schedule_year = SCHEDULE.year AND RESULT.schedule_semester = SCHEDULE.semester ' +
@@ -37,7 +23,6 @@ const GetCertificate = (req, res) => {
 
     db.query(sql + sql2, function(error, results){
         const maxPage = Math.ceil(results[0].length / 20);
-        console.log(results);
 
         if (error) { // 애러 핸들링
             console.log("DB query error at RESULT : ", error);
@@ -48,8 +33,6 @@ const GetCertificate = (req, res) => {
     })
 }
 
-
 router.get('/', GetCertificate);
-
 
 module.exports = router;
