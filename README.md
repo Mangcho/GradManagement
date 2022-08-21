@@ -9,7 +9,8 @@
 3. /views
    - EJS 파일로 이루어져 있는 프론트
    - HTML, CSS, JS, bootstrap5
-
+4. /setting
+   - /database DB config 파일 존재
 
 #### **계정상태**
 현재 계정 상태에 따라 접속 가능한 페이지가 달라집니다.
