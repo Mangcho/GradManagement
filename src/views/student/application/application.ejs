@@ -74,52 +74,52 @@
         </div>
       </div>
     </div>
-    <div class="row teammatesTitle mt-2">
-      <div class="col border border-dark mt-2 text-center">
+    <div class="row teammatesTitle d-none mt-2">
+      <div class="col mt-2 text-center ">
         <span class="fs-5">팀원 명단 입력</span>
       </div>
     </div>
     <!-- Teammates -->
     <div class="row row-cols-2 teammatesContent mt-2">
       <div class="col form-group has-success mb-1">
-        <input type="text" placeholder="학번" class="form-control" id="inputFirstID" value="<%= myself.id %>" disabled>
+        <input type="text" placeholder="학번" class="form-control inputID d-none" id="inputFirstID" value="<%= myself.id %>">
       </div>
       <div class="col form-group has-success mb-1">
-        <input type="text" placeholder="이름" class="form-control" id="inputFirstName" value="<%= myself.name %>" disabled>
+        <input type="text" placeholder="이름" class="form-control inputName d-none" id="inputFirstName" value="<%= myself.name %>">
       </div>
       <div class="col form-group has-success mb-1">
-        <input type="text" placeholder="학번" class="form-control inputID" id="inputSecondID" disabled>
+        <input type="text" placeholder="학번" class="form-control inputID d-none" id="inputSecondID">
         <div class="valid-feedback">올바른 양식입니다.</div>
         <div class="invalid-feedback">학번은 9자리의 숫자로 구성해야 합니다.</div>
       </div>
       <div class="col form-group has-success mb-1">
-        <input type="text" placeholder="이름" class="form-control inputName" id="inputSecondName" disabled>
+        <input type="text" placeholder="이름" class="form-control inputName d-none" id="inputSecondName">
         <div class="valid-feedback">올바른 양식입니다.</div>
         <div class="invalid-feedback">이름은 한국어로만 구성해야 합니다.</div>
       </div>
       <div class="col form-group has-success mb-1">
-        <input type="text" placeholder="학번" class="form-control inputID" id="inputThirdID" disabled>
+        <input type="text" placeholder="학번" class="form-control inputID d-none" id="inputThirdID">
         <div class="valid-feedback">올바른 양식입니다.</div>
         <div class="invalid-feedback">학번은 9자리의 숫자로 구성해야 합니다.</div>
       </div>
       <div class="col form-group has-success mb-1">
-        <input type="text" placeholder="이름" class="form-control inputName" id="inputThirdName" disabled>
+        <input type="text" placeholder="이름" class="form-control inputName d-none" id="inputThirdName">
         <div class="valid-feedback">올바른 양식입니다.</div>
         <div class="invalid-feedback">이름은 한국어로만 구성해야 합니다.</div>
       </div>
       <div class="col form-group has-success mb-1">
-        <input type="text" placeholder="학번" class="form-control inputID" id="inputFourthID" disabled>
+        <input type="text" placeholder="학번" class="form-control inputID d-none" id="inputFourthID">
         <div class="valid-feedback">올바른 양식입니다.</div>
         <div class="invalid-feedback">학번은 9자리의 숫자로 구성해야 합니다.</div>
       </div>
       <div class="col form-group has-success mb-1">
-        <input type="text" placeholder="이름" class="form-control inputName" id="inputFourthName" disabled>
+        <input type="text" placeholder="이름" class="form-control inputName d-none" id="inputFourthName">
         <div class="valid-feedback">올바른 양식입니다.</div>
         <div class="invalid-feedback">이름은 한국어로만 구성해야 합니다.</div>
       </div>
     </div>
     <div class="row uploadFileTitle mt-2">
-      <div class="col border border-dark mt-2 text-center">
+      <div class="col mt-2 text-center">
         <span class="fs-5">파일 업로드</span>
       </div>
     </div>
@@ -151,6 +151,7 @@
     const inputNameArr = document.querySelectorAll('.inputName');
     const gradItem = document.querySelector('#categoryTeamProject');
     const categorySelecter = document.querySelector('.categoryContainer');
+    const teamTitle = document.querySelector('.teammatesTitle');
 
     let idCorrectCount = 0;
     let nameCorrectCount = 0;
@@ -158,17 +159,19 @@
     function disableAll() {
       if (gradItem.checked == false) {
         inputIDArr.forEach((obj) => {{
-        obj.disabled = true;
+        obj.classList.add('d-none');
+        teamTitle.classList.add('d-none');
     }})
         inputNameArr.forEach((obj) => {{
-        obj.disabled = true;
+        obj.classList.add('d-none');
     }})
       } else {
         inputIDArr.forEach((obj) => {{
-        obj.disabled = false;
+        obj.classList.remove('d-none');
+        teamTitle.classList.remove('d-none');
     }})
         inputNameArr.forEach((obj) => {{
-        obj.disabled = false;
+        obj.classList.remove('d-none');
     }})
       }
     }
