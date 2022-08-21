@@ -42,36 +42,6 @@ const GetApplication = (req, res) => {
     })
 }
 
-const PutApplication = (req, res) => {
-    const { isPass, data } = req.body;
-    let sql = '';
-    if (isPass == true) {
-        sql = 'UPDATE APPLICATION SET approval = CASE ' 
-        + 'WHEN ISNULL(approval) THEN true '
-        + 'ELSE approval END '
-        + 'WHERE student_id = "';
-        const a = data.join('" OR student_id = "');
-        sql = sql + a + '";';
-    } else {
-        sql = 'UPDATE APPLICATION SET approval = CASE ' 
-        + 'WHEN ISNULL(approval) THEN false '
-        + 'ELSE approval END, reason = "' + data.reason
-        + '" WHERE student_id = "';
-        const a = data.join('" OR student_id = "');
-        sql = sql + a + '";';
-    }
-    db.query(sql, function (error, results) {
-        if (error) { 
-            console.log("Application DB query error! : ", error);
-            return res.send({ success: false });
-        }
-        if(results.changedRows == 0){
-            return res.send({ success: false });
-        }
-        return res.send({ success: true });
-    })
-}
-
 const GetApplicationDetail = (req, res) => {
     const sql = 'SELECT APPLICATION.id, student_id, STUDENT.name, category, teammates, file, timestamp, approval, reason FROM APPLICATION ' +
         'LEFT JOIN STUDENT ON APPLICATION.student_id = STUDENT.id WHERE student_id="' + req.query.id + '";';
@@ -96,15 +66,14 @@ const PutApplicationDetail = (req, res) => {
     
     if (isPass == true) {
         sql = 'UPDATE APPLICATION SET approval = CASE ' 
-        + 'WHEN ISNULL(approval) THEN true '
-        + 'ELSE approval END '
+        + 'WHEN ISNULL(approval) THEN true ELSE approval END '
         + 'WHERE student_id = "' + req.query.id + '";';
         
     } else {
         sql = 'UPDATE APPLICATION SET approval = CASE ' 
-        + 'WHEN ISNULL(approval) THEN false '
-        + 'ELSE approval END, reason = "' + reason
-        + '" WHERE student_id = "' + req.query.id + '";';
+        + 'WHEN ISNULL(approval) THEN false ELSE approval END'
+        + ', reason = CASE WHEN ISNULL(reason) THEN "'+ reason + '" ELSE reason END ' 
+        + 'WHERE student_id = "' + req.query.id + '";';
     }
     db.query(sql, function (error, results) {
         if (error) { 
@@ -120,7 +89,6 @@ const PutApplicationDetail = (req, res) => {
 
 router.route('/')
 .get(GetApplication)
-.put(PutApplication)
 
 router.route('/detail')
 .get(GetApplicationDetail)

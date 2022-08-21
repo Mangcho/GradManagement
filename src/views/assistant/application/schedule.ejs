@@ -1,195 +1,187 @@
 <% const dir=process.cwd() %>
-    <!DOCTYPE html>
-    <%- include(dir + '/src/views/common/head' ) %>
+<!DOCTYPE html>
+<%- include(dir + '/src/views/common/head' ) %>
 
-        <body>
-            <%- include(dir + '/src/views/common/navbar-admin' ) %>
-                <% if((typeof(results))==undefined) {%>
-                    <% results[0].year=2022; results[0].semester='1' ; results[0].start='2022/01/01' ;results[0].end='2022/01/01' ; success=false;}%>
+<body>
+  <%- include(dir + '/src/views/common/navbar-admin' ) %>
+  <% if((typeof(results))==undefined) {%>
+  <% results[0].year=2022; results[0].semester='1' ; results[0].start='2022/01/01' ;results[0].end='2022/01/01' ; success=false;}%>
 
-                        <!-- bootstrap5 alert -->
-                        <div class="alert alert-success d-none" id="alert_box">
-                            <strong id="alert_mention"></strong>
-                        </div>
-                        <div class="container-sm">
-                            <div class="row mt-3 text-center border border-info border-2 ">
-                                <span class="col d-flex justify-content-center fs-1 fw-bold">일정 입력</span>
-                            </div>
-                            <div class="row mt-3 mb-1 text-center border border-info border-2">
-                                <div class="col fs-3 bg-light">
-                                    현재 학기 입력
-                                </div>
-                                <div class="col d-flex mb-2 mt-2">
-                                    <div class="form-group me-4">
-                                        <div class="input-group">
-                                            <input type="text" class="form-control text-center"
-                                                placeholder="연도를 선택해 주세요." name="currentYear"
-                                                value="<%= results[0].year %>">
-                                            <span class="input-group-text">년</span>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <div class="input-group">
-                                            <select class="form-select text-center" id="semesterSelect">
-                                                <option <%=results[0].semester==='1' ? 'selected' :'' %>>1</option>
-                                                <option <%=results[0].semester==='2' ? 'selected' :'' %>>2</option>
-                                            </select>
-                                            <span class="input-group-text">학기</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row text-center border border-info border-2">
-                                <div class="col bg-light">
-                                    <div class="fs-3 my-1">
-                                        심사신청기간 입력
-                                    </div>
-                                    <div class="form-group mb-3">
-                                        <textarea class="form-control text-center " id="exampleTextarea" rows="3"
-                                            maxlength="40" placeholder="공지될 문구를 여기에 입력해 주세요.."
-                                            style="resize: none;"></textarea>
-                                    </div>
-                                </div>
-                                <div class="col">
-                                    <div class="row bg-light fs-4">
-                                        <div class="col border-bottom border-start border-2">시작일</div>
-                                        <div class="col border-bottom border-start border-2">종료일</div>
-                                    </div>
-                                    <span class="d-flex text-danger justify-content-start my-1"
-                                        style="font-size: 6px;">* 접수 시작과
-                                        마감 시간은 00시 정각으로 고정됩니다.</span>
-                                    <div class="row mt-3">
-                                        <div class="col">
-                                            <div class="form-group ">
-                                                <div class="input-group ">
-                                                    <input type="text" class="form-control text-center"
-                                                        placeholder="날짜를 선택해 주세요." name="startDate_start"
-                                                        value="<%= results[0].start %>">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col">
-                                            <div class="input-group">
-                                                <input type="text" class="form-control text-center"
-                                                    placeholder="날짜를 선택해 주세요." name="startDate_end"
-                                                    value="<%= results[0].end %>">
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="row mt-4 d-flex justify-content-center">
-                                <button class="btn btn-lg btn-primary w-50 text-center" id="saveSchedule">저장</button>
-                            </div>
-                        </div>
-                        <%- include(dir + '/src/views/common/footer' ) %>
-                            <script>
-                                // Datepicker For Current Year
-                                const currentYear = document.querySelector('input[name="currentYear"]');
-                                const yearPicker = new Datepicker(currentYear, {
-                                    buttonClass: 'btn',
-                                    language: 'ko',
-                                    autohide: true,
-                                    format: 'yyyy',
-                                    minDate: '2022',
-                                    maxDate: '2099',
-                                    pickLevel: 2,
-                                    title: '현재학기 연도 선택'
-                                });
+  <!-- bootstrap5 alert -->
+  <div class="alert alert-success d-none" id="alert_box">
+    <strong id="alert_mention"></strong>
+  </div>
+  <div class="container-sm">
+    <div class="row mt-3 text-center">
+      <span class="col d-flex justify-content-center fs-1 fw-bold">일정 입력</span>
+    </div>
+    <div class="mt-1 mb-3 d-flex justify-content-center">
+        <div class="w-25 border-top border-dark shadow-sm"></div>
+    </div>
+    <div class="row mt-3 mb-1 text-center">
+      <div class="col fs-3 bg-light">
+        현재 학기 입력
+      </div>
+      <div class="col d-flex mb-2 mt-2">
+        <div class="form-group me-4">
+          <div class="input-group">
+            <input type="text" class="form-control text-center" placeholder="연도를 선택해 주세요." name="currentYear" value="<%= results[0].year %>">
+            <span class="input-group-text">년</span>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="input-group">
+            <select class="form-select text-center" id="semesterSelect">
+              <option <%=results[0].semester==='1' ? 'selected' :'' %>>1</option>
+              <option <%=results[0].semester==='2' ? 'selected' :'' %>>2</option>
+            </select>
+            <span class="input-group-text">학기</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row text-center">
+      <div class="col bg-light">
+        <div class="fs-3 my-1">
+          심사신청기간 입력
+        </div>
+        <div class="form-group mb-3">
+          <textarea class="form-control text-center " id="exampleTextarea" rows="3" maxlength="40" placeholder="공지될 문구를 여기에 입력해 주세요.." style="resize: none;"></textarea>
+        </div>
+      </div>
+      <div class="col">
+        <div class="row bg-light fs-4">
+          <div class="col border-bottom">시작일</div>
+          <div class="col border-bottom">종료일</div>
+        </div>
+        <span class="d-flex text-danger justify-content-start my-1" style="font-size: 6px;">* 접수 시작과
+          마감 시간은 00시 정각으로 고정됩니다.</span>
+        <div class="row mt-3">
+          <div class="col">
+            <div class="form-group ">
+              <div class="input-group ">
+                <input type="text" class="form-control text-center" placeholder="날짜를 선택해 주세요." name="startDate_start" value="<%= results[0].start %>">
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="input-group">
+              <input type="text" class="form-control text-center" placeholder="날짜를 선택해 주세요." name="startDate_end" value="<%= results[0].end %>">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-4 d-flex justify-content-center">
+      <button class="btn btn-lg btn-primary w-50 text-center" id="saveSchedule">저장</button>
+    </div>
+  </div>
+  <%- include(dir + '/src/views/common/footer' ) %>
+  <script>
+    // Datepicker For Current Year
+    const currentYear = document.querySelector('input[name="currentYear"]');
+    const yearPicker = new Datepicker(currentYear, {
+      buttonClass: 'btn',
+      language: 'ko',
+      autohide: true,
+      format: 'yyyy',
+      minDate: '2022',
+      maxDate: '2099',
+      pickLevel: 2,
+      title: '현재학기 연도 선택'
+    });
 
-                                // Datepicker For StartDate
-                                const startDate_start = document.querySelector('input[name="startDate_start"]');
-                                const startPicker = new Datepicker(startDate_start, {
-                                    buttonClass: 'btn',
-                                    language: 'ko',
-                                    autohide: true,
+    // Datepicker For StartDate
+    const startDate_start = document.querySelector('input[name="startDate_start"]');
+    const startPicker = new Datepicker(startDate_start, {
+      buttonClass: 'btn',
+      language: 'ko',
+      autohide: true,
 
-                                    format: 'yyyy/mm/dd',
-                                    minDate: '2022/01/01',
-                                    maxDate: '2099/12/31',
-                                    title: '심사신청 시작일 선택'
+      format: 'yyyy/mm/dd',
+      minDate: '2022/01/01',
+      maxDate: '2099/12/31',
+      title: '심사신청 시작일 선택'
 
-                                });
+    });
 
-                                // Datepicker For EndDate
-                                const startDate_end = document.querySelector('input[name="startDate_end"]');
-                                const endPicker = new Datepicker(startDate_end, {
-                                    buttonClass: 'btn',
-                                    language: 'ko',
-                                    autohide: true,
+    // Datepicker For EndDate
+    const startDate_end = document.querySelector('input[name="startDate_end"]');
+    const endPicker = new Datepicker(startDate_end, {
+      buttonClass: 'btn',
+      language: 'ko',
+      autohide: true,
 
-                                    format: 'yyyy/mm/dd',
-                                    minDate: '2022/01/01',
-                                    maxDate: '2099/12/31',
-                                    title: '심사신청 시작일 선택'
+      format: 'yyyy/mm/dd',
+      minDate: '2022/01/01',
+      maxDate: '2099/12/31',
+      title: '심사신청 시작일 선택'
 
-                                });
+    });
 
-                                // Datepicker Event
-                                startDate_start.addEventListener('changeDate', () => {
-                                    const daylimit = startPicker.getDate('yyyy/mm/dd');
-                                    endPicker.setOptions({
-                                        minDate: daylimit
-                                    })
-                                })
+    // Datepicker Event
+    startDate_start.addEventListener('changeDate', () => {
+      const daylimit = startPicker.getDate('yyyy/mm/dd');
+      endPicker.setOptions({
+        minDate: daylimit
+      })
+    })
 
-                                startDate_end.addEventListener('changeDate', () => {
-                                    const daylimit = endPicker.getDate('yyyy/mm/dd');
-                                    startPicker.setOptions({
-                                        maxDate: daylimit
-                                    })
-                                })
+    startDate_end.addEventListener('changeDate', () => {
+      const daylimit = endPicker.getDate('yyyy/mm/dd');
+      startPicker.setOptions({
+        maxDate: daylimit
+      })
+    })
 
-                                // FETCH to PUT Data In DB
-                                const box = document.querySelector('#alert_box');
-                                const mention = document.querySelector('#alert_mention');
+    // FETCH to PUT Data In DB
+    const box = document.querySelector('#alert_box');
+    const mention = document.querySelector('#alert_mention');
 
-                                const PutSchedule = (req, res) => {
-                                    const box = document.querySelector('#alert_box');
-                                    const mention = document.querySelector('#alert_mention');
+    const PutSchedule = (req, res) => {
+      const box = document.querySelector('#alert_box');
+      const mention = document.querySelector('#alert_mention');
 
-                                    fetch('/assistant/schedule', {
-                                        method: 'PUT',
-                                        headers: {
-                                            'Content-Type': 'application/json'
-                                        },
-                                        body: JSON.stringify({
-                                            inputYear: currentYear.value,
-                                            inputSemester: semesterSelect.value,
-                                            inputStartDate: startDate_start.value,
-                                            inputEndDate: startDate_end.value
-                                        })
-                                    })
-                                        .then((response) => {
-                                            if (response.ok) {
-                                                box.classList.add('d-none');
-                                                return response.json();
-                                            }
-                                            return Promise.reject()
-                                        })
-                                        .then((data) => {
-                                            console.log(data);
-                                            if (data.success == true) {
-                                                box.classList.remove('alert-danger');
-                                                box.classList.add('alert-success');
-                                                mention.textContent = '일정이 정상적으로 저장되었습니다.';
-                                            }
-                                            else {
-                                                box.classList.remove('alert-success');
-                                                box.classList.add('alert-danger');
-                                                mention.textContent = '일정 저장에 실패하였습니다.';
-                                            }
-                                            box.classList.remove('d-none');
-                                        })
-                                        .catch((error) => {
-                                            console.error(error);
-                                        })
-                                }
+      fetch('/assistant/schedule', {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            inputYear: currentYear.value,
+            inputSemester: semesterSelect.value,
+            inputStartDate: startDate_start.value,
+            inputEndDate: startDate_end.value
+          })
+        })
+        .then((response) => {
+          if (response.ok) {
+            box.classList.add('d-none');
+            return response.json();
+          }
+          return Promise.reject()
+        })
+        .then((data) => {
+          console.log(data);
+          if (data.success == true) {
+            box.classList.remove('alert-danger');
+            box.classList.add('alert-success');
+            mention.textContent = '일정이 정상적으로 저장되었습니다.';
+          } else {
+            box.classList.remove('alert-success');
+            box.classList.add('alert-danger');
+            mention.textContent = '일정 저장에 실패하였습니다.';
+          }
+          box.classList.remove('d-none');
+        })
+        .catch((error) => {
+          console.error(error);
+        })
+    }
 
-                                const btn = document.querySelector('#saveSchedule');
-                                btn.addEventListener('click', PutSchedule);
+    const btn = document.querySelector('#saveSchedule');
+    btn.addEventListener('click', PutSchedule);
+  </script>
+</body>
 
-                            </script>
-        </body>
-
-        </html>
+</html>

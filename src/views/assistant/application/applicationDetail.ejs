@@ -26,9 +26,8 @@
   </div>
 
   <!-- bootstrap5 PUT result alert -->
-  <div class="alert alert-dismissible alert-success d-none" id="saveAlert">
-    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-    <strong id="alert-text">정상적으로 저장이 완료되었습니다.</strong>
+  <div class="alert alert-success d-none" id="alert_box">
+    <strong id="alert_mention"></strong>
   </div>
 
   <!-- Main -->
@@ -55,10 +54,10 @@
         <% }else{ %>
         <span>접수거부</span>
         <% if(paper.approval != null && paper.approval == false){ %>
-          <div class="row text-center border-top">
-            <span> 거부사유 :  <%= paper.reason %> </span>
-          </div>
-          <% } %> 
+        <div class="row text-center border-top">
+          <span> 거부사유 : <%= paper.reason %> </span>
+        </div>
+        <% } %>
         <% } %>
       </div>
     </div>
@@ -139,6 +138,9 @@
     const btnPass = document.querySelector('#savePass');
     const btnFail = document.querySelector('#failSubmit');
     const failReason = document.querySelector('#denial-text');
+
+    const box = document.querySelector('#alert_box');
+    const mention = document.querySelector('#alert_mention');
 
     function PutApplicationPass() {
       fetch(location.href, {
