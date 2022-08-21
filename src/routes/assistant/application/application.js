@@ -118,7 +118,6 @@ const PutApplicationDetail = (req, res) => {
     })
 }
 
-
 router.route('/')
 .get(GetApplication)
 .put(PutApplication)

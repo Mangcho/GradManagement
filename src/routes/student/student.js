@@ -19,7 +19,6 @@ const GetStudentMain = (req, res) => {
             return res.render(__dirname + '/../../views/student/student.ejs', { success: true, term: false });
         }
         return res.render(__dirname + '/../../views/student/student.ejs', { success: true, term: true, schedule:results[0][0], noticeList:results[1] });
-
     })
 }
 

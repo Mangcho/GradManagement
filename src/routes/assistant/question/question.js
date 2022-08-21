@@ -1,4 +1,5 @@
 const express = require('express');
+
 const db = require('../../../settings/database/config');
 
 const router = express.Router();
@@ -103,7 +104,6 @@ const PostQuestionComment = (req, res) => {
         })
     })
 }
-
 
 const GetQuestionForm = (req, res) => {
     return res.render(__dirname + '/../../../views/assistant/question/questionForm.ejs');
