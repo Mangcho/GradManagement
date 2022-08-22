@@ -1,17 +1,10 @@
 const express = require('express');
-const crypto = require('node:crypto');
 const db = require('../../settings/database/config');
+const crypto = require('../../utils/cryptPassword');
 
 const router = express.Router();
 
-const GetHash = (data) => {
-    const hash = crypto.createHash('sha256');
-    hash.update(data);
-    return hash.digest('hex');
-}
-
 const GetAssistantAuth = (req, res) => {
-
     const maxStudent = 20;
     let page;
     let sql2;
@@ -97,7 +90,7 @@ const GetPasswordReset = (req, res) => {
 const PutPasswordReset = (req, res) => {
     const Input_ID = req.body.Input_ID;
     const idChecker = /^[\d]{9}$/g;
-    const cryPW = GetHash(String(Input_ID));
+    const cryPW = crypto.GetHash(String(Input_ID));
 
     if (String(Input_ID).search(idChecker) > -1) {
         const sql = "UPDATE STUDENT SET password ='"+ cryPW + "'WHERE id = '" + Input_ID + "';";
@@ -107,7 +100,6 @@ const PutPasswordReset = (req, res) => {
                 console.log("DB query error! : ", error);
                 return res.send({ success: false })
             }
-            
             return res.send({ success: true })
         })
     }

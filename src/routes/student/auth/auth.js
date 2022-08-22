@@ -1,14 +1,8 @@
 const express = require('express');
-const crypto = require('node:crypto');
+const crypto = require('../../../utils/cryptPassword');
 const db = require('../../../settings/database/config');
 
 const router = express.Router();
-
-const GetHash = (data) => {
-    const hash = crypto.createHash('sha256');
-    hash.update(data);
-    return hash.digest('hex');
-}
 
 const GetAuth = (req, res) => {
     const sql = 'SELECT name, id, phone_num, email FROM STUDENT WHERE id=' + req.session.userId + ';';
@@ -48,7 +42,7 @@ const GetPassword = (req, res) => {
 
 const PutPassword = (req, res) => {
     const { currentPassword, newPassword, newPasswordRepeat } = req.body;
-    const cryCureentPassword = GetHash(String(currentPassword));
+    const cryCureentPassword = crypto.GetHash(String(currentPassword));
     const validSql = "SELECT id, password FROM STUDENT WHERE id= '" + req.session.userId + "'"
 
     db.query(validSql, function (error, result) {
@@ -59,8 +53,8 @@ const PutPassword = (req, res) => {
         if (result[0].password != String(cryCureentPassword)) {
             return res.send({ success: true, match: false });
         } else {
-            const cryNewPassword = GetHash(String(newPassword));
-            const cryNewPasswordRepeat = GetHash(String(newPasswordRepeat));
+            const cryNewPassword = crypto.GetHash(String(newPassword));
+            const cryNewPasswordRepeat = crypto.GetHash(String(newPasswordRepeat));
 
             if (cryNewPassword === cryNewPasswordRepeat) {
                 const sql = "UPDATE STUDENT SET password ='" + cryNewPassword + "'WHERE id = '" + req.session.userId + "';";
