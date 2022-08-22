@@ -1,6 +1,6 @@
-const crypto = require('node:crypto');
 const express = require('express');
 const db = require('../../settings/database/config');
+const crypto = require('../../utils/cryptPassword');
 
 const router = express.Router();
 
@@ -13,15 +13,9 @@ const GetLogin = (req, res) => {
     }
 }
 
-const GetHash = (data) => {
-    const hash = crypto.createHash('sha256');
-    hash.update(data);
-    return hash.digest('hex');
-}
-
 const PostLogin = (req, res) => {
     const { Input_ID, Input_PW } = req.body;
-    const HashPW = GetHash(Input_PW);
+    const HashPW = crypto.GetHash(Input_PW);
 
     if(Input_ID == '' || Input_PW =='') {
         //Already checked in client 

@@ -2,8 +2,8 @@ const express = require('express');
 const multer = require('multer');
 const excel = require('exceljs');
 const fs = require('fs');
-const crypto = require('node:crypto');
 const db = require('../../settings/database/config');
+const crypto = require('../../utils/cryptPassword');
 
 const router = express.Router();
 const storage = multer.diskStorage({
@@ -36,12 +36,6 @@ const storage = multer.diskStorage({
 const upload = multer({
     storage: storage
 });
-
-const GetHash = (data) => {
-    const hash = crypto.createHash('sha256');
-    hash.update(data);
-    return hash.digest('hex');
-}
 
 const GetRegistration = (req, res) => {
     fs.readdir('src/public/templates/input', (err, files) => {
@@ -93,7 +87,7 @@ const PostRegistration = (req, res) => {
                             }) // eachCell ends
 
                             if (String(lineData[0]).search(idChecker) > -1) {
-                                const encyPW = GetHash(String(lineData[0]));
+                                const encyPW = crypto.GetHash(String(lineData[0]));
                                 const sql = "INSERT INTO STUDENT VALUE('" + lineData[0] + "', '" + lineData[1] + "', '" + encyPW + "', 1 , '" + lineData[2] + "', '" + lineData[3] + "');";
 
                                 db.promise().execute(sql)
