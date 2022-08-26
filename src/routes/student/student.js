@@ -4,7 +4,7 @@ const db = require('../../settings/database/config');
 const router = express.Router();
 
 const GetStudentMain = (req, res) => {
-    const sql = 'SELECT * FROM SCHEDULE WHERE start <= NOW() AND end >= NOW();';
+    const sql = 'SELECT * FROM SCHEDULE WHERE start <= NOW() AND end >= NOW() limit 1;';
     const sql2 = 'SELECT * FROM NOTICE ORDER BY id DESC LIMIT 7;';
     
     db.query(sql + sql2, function(error, results){
@@ -15,10 +15,11 @@ const GetStudentMain = (req, res) => {
         if(results == undefined){
             return res.render(__dirname + '/../../views/student/student.ejs', { success: false });
         }
-        else if(results.length == 0 ){
-            return res.render(__dirname + '/../../views/student/student.ejs', { success: true, term: false });
-        }
-        return res.render(__dirname + '/../../views/student/student.ejs', { success: true, term: true, schedule:results[0][0], noticeList:results[1] });
+        else if(results[0].length == 0 ){
+            return res.render(__dirname + '/../../views/student/student.ejs', { success: true, term: false, schedule:undefined });
+        } else{
+            return res.render(__dirname + '/../../views/student/student.ejs', { success: true, term: true, schedule:results[0][0], noticeList:results[1] });
+        }   
     })
 }
 

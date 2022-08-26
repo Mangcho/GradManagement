@@ -20,6 +20,9 @@ const GetApplication = (req, res) => {
             console.log("DB query error at SCHEDULE : ", error);
             return res.render(__dirname + '/../../../views/assistant/application/application.ejs', { success: false })
         }
+        if (results1[0] == undefined) { 
+            return res.render(__dirname + '/../../../views/assistant/application/application.ejs', { success: false })
+        }
         const sql2 = 'SELECT student_id, schedule_year, schedule_semester FROM APPLICATION ' +
             'WHERE schedule_year = ' + results1[0].year + ' AND schedule_semester = "' + results1[0].semester + '";';
 

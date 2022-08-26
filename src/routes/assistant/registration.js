@@ -139,7 +139,7 @@ const PostRegistration = (req, res) => {
 }
 
 const GetTemplateFile = (req, res) => {
-    return res.download('/home/sjkim/GradManagement/src/public/templates/학생_계정_추가_양식.xlsx');
+    return res.download('src/public/templates/학생_계정_추가_양식.xlsx');
 }
 
 router.route('/')

@@ -7,7 +7,8 @@ const router = express.Router();
 const GetAssistantAuth = (req, res) => {
     const maxStudent = 20;
     let page;
-    let sql2;
+    let sql1 ='';
+    let sql2 = '';
 
     if (req.query.page === undefined) {
         page = Number(1);
@@ -18,13 +19,13 @@ const GetAssistantAuth = (req, res) => {
     }
 
     if (req.query.search === undefined) {
+        sql1 = 'SELECT name, id, state FROM STUDENT;';
         sql2 = 'SELECT name, id, state FROM STUDENT ORDERS LIMIT ' + maxStudent + ' OFFSET ' + Number((page - 1) * maxStudent) + ';';
     }
     else {
-        sql2 = 'SELECT name, id, state FROM STUDENT WHERE id="' + req.query.search + '";';
+        sql1 = 'SELECT name, id, state FROM STUDENT WHERE id LIKE "%' + req.query.search + '%";';
+        sql2 = 'SELECT name, id, state FROM STUDENT WHERE id LIKE "%' + req.query.search + '%";';
     }
-
-    const sql1 = 'SELECT name, id, state FROM STUDENT;';
 
     db.query(sql1 + sql2, function (error, results) {
         if (error) {
@@ -33,7 +34,6 @@ const GetAssistantAuth = (req, res) => {
         }
         const numOfStudents = results[0].length;
         const maxPage = Math.ceil(numOfStudents / maxStudent);
-
         return res.render(__dirname + '/../../views/assistant/auth/auth.ejs', { results: results[1], currentPage: page, maxPage: maxPage });
     })
 }
@@ -107,7 +107,6 @@ const PutPasswordReset = (req, res) => {
         return res.send({ success: false })
     }
 }
-
 
 router.get('/', GetAssistantAuth);
 router.route('/password')
