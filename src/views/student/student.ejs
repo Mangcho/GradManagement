@@ -17,10 +17,11 @@
       <div class="col mt-4 text-center">
         <% if(success == true && term == true){%>
         <span class="fs-3 fw-bold"><%= schedule.year %>년도 <%= schedule.semester%>학기 </span> <br>
-        <span class="">졸업인증 심사신청기간<br></span>
+        <span>졸업인증 심사신청기간<br></span>
         <span class="fs-3"><%= schedule.start %> ~ <%= schedule.end %></span>
         <% } else if(success == true && term == false) {%>
-        <span>지금은 졸업인증 심사신청기간이 아닙니다.</span>
+          <% let schedule = undefined %> 
+        <span class="h2">지금은 졸업인증 심사신청기간이 아닙니다.</span>
         <% } %>
       </div>
     </div>
@@ -45,11 +46,11 @@
           </tr>
         </thead>
         <tbody>
-          <% if(noticeList===null || noticeList.length===0){ %>
+          <% if(typeof(noticeList) == "undefined" || noticeList.length===0){ %>
           <tr class="">
             <td colspan="3" class="fs-5 text-muted">조회된 내역이 없습니다</td>
           </tr>
-          <% } %>
+          <% }else { %>
           <% noticeList.forEach(function(notice) { %>
           <tr>
             <td onclick="location.href='/student/notice/detail?id=<%= notice.id %>'">
@@ -63,7 +64,7 @@
               <%= date[0] %>
             </td>
           </tr>
-          <% }) %>
+          <% })}%>
         </tbody>
       </table>
     </div>
