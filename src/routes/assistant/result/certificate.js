@@ -6,6 +6,8 @@ const router = express.Router();
 
 const GetCertificate = (req, res) => {
     let page = req.body.page;
+    let sql = '';
+    let sql2 = '';
 
     if (req.query.page === undefined) {
         page = Number(1);
@@ -14,12 +16,20 @@ const GetCertificate = (req, res) => {
         page = parseInt(req.query.page);
         page = Math.max(1, page);
     }
-
-    const sql = 'SELECT student_id FROM RESULT WHERE approval = true;';
-    const sql2 = 'SELECT STUDENT.id, STUDENT.name, category, timestamp, approval, schedule_year, schedule_semester ' +
+    if(req.query.search == undefined){
+        sql = 'SELECT student_id FROM RESULT WHERE approval = true;';
+        sql2 = 'SELECT STUDENT.id, STUDENT.name, category, timestamp, approval, schedule_year, schedule_semester ' +
         'FROM RESULT LEFT JOIN STUDENT ON RESULT.student_id = STUDENT.id ' +
         'LEFT JOIN SCHEDULE ON RESULT.schedule_year = SCHEDULE.year AND RESULT.schedule_semester = SCHEDULE.semester ' +
         'WHERE approval = true ORDER BY schedule_year, schedule_semester LIMIT 20 OFFSET ' + Number((page - 1) * 20) + ';';
+    } else {
+        sql = 'SELECT student_id FROM RESULT WHERE approval = true AND student_id like "%' +req.query.search + '%";';
+        sql2 = 'SELECT STUDENT.id, STUDENT.name, category, timestamp, approval, schedule_year, schedule_semester ' +
+        'FROM RESULT LEFT JOIN STUDENT ON RESULT.student_id = STUDENT.id ' +
+        'LEFT JOIN SCHEDULE ON RESULT.schedule_year = SCHEDULE.year AND RESULT.schedule_semester = SCHEDULE.semester ' +
+        'WHERE approval = true AND STUDENT.id like "%' +req.query.search + 
+        '%" ORDER BY schedule_year, schedule_semester;';
+    }
 
     db.query(sql + sql2, function (error, results) {
         const maxPage = Math.ceil(results[0].length / 20);
@@ -40,6 +50,9 @@ const GetCertificateprint = (req, res) => {
         if (error) {
             console.log("DB query error at RESULT : ", error);
             return res.send({ success: false });
+        }
+        if(results == undefined || results.length == 0){
+            return res.send("입력된 명단이 없습니다!");
         }
         const workbook = new excel.Workbook();
         workbook.creator = '가천대학교 컴퓨터공학과';

@@ -3,7 +3,8 @@ const express = require('express');
 const router = express.Router();
 
 const GetAssistant = (req, res) => {
-    res.render(__dirname + '/../../views/assistant/assistant.ejs');
+    res.redirect('/assistant/application');
+    //res.render(__dirname + '/../../views/assistant/assistant.ejs');
 }
 
 router.get('/', GetAssistant);

@@ -40,7 +40,6 @@ const GetApplication = (req, res) => {
                 console.log("APPLICATION DB query error! : ", error);
                 return res.render(__dirname + '/../../../views/student/application/application.ejs', { success: false, myself: myself });
             }
-            console.log(results2);
             if (results2.length == 0) {
                 return res.render(__dirname + '/../../../views/student/application/application.ejs', { success: true, myself: myself, app: undefined });
             } else {
@@ -62,7 +61,14 @@ const PostApplication = (req, res) => {
             console.log("APPLICATION - SCHEDULE DB query error! : ", error);
             return res.send({ success: false });
         }
-        let sql2 = '';
+        console.log(results1.length);
+        if(results1 == undefined){
+            return res.send({ success: false });
+        }
+
+        if(results1.length == 0){
+            return res.send({ success: false, limit:false });
+        }
         if (category == 1) {
             inputNameArr = inputNameArr.split(',');
             inputIdArr = inputIdArr.split(',');

@@ -9,6 +9,12 @@
   <div class="alert alert-success d-none" id="alert_box">
     <strong id="alert_mention"></strong>
   </div>
+  <% if(typeof(limit) == "undefined" || limit == false ) {%>
+    <div class="alert alert-danger alert-dismissible">
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+      현재 접수기간이 끝났습니다.
+    </div>
+  <% } else { %> 
   <% if(app == undefined) {%>
   <div class="alert alert-info alert-dismissible">
     <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
@@ -364,6 +370,7 @@
       
     </div>
     <% } %>
+    <% }%> 
 </body>
 
 </html>
