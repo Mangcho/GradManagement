@@ -4,7 +4,7 @@ require('dotenv').config() // process.env config
 const express = require('express');
 const session = require('express-session');
 const favicon = require('serve-favicon');
-const db = require('./settings/database/config.js');
+const mysql_session = require('./settings/mysql-session/config.js');
 
 // Routing Import
 // Common Import
@@ -44,6 +44,7 @@ app.use(favicon(path.join(__dirname, '/public/images', '/favicon.ico')));
 
 app.use(session({
     secret: process.env.SESSION_SECRET_KEY, // .env 읽어와서 key 세팅
+    store: mysql_session.sessionStore,
     resave: false,
     saveUninitialized: false
   }));
